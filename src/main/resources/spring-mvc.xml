@@ -14,7 +14,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<!-- 自动扫描controller包下的所有类，使其认为spring mvc的控制器 -->
-	<context:component-scan base-package="com.mobian.controller,com.ethealth.front.controller"/>
+	<context:component-scan base-package="com.mobian.controller,com.ljz.front.controller"/>
 
 	<!-- Spring MVC JSON配置 -->
 	<bean
@@ -85,19 +85,10 @@
 					<list>
 						<value>/api/baseData/basedata</value><!-- 基础数据 -->
 						<value>/api/baseData/basedatas</value><!-- 基础数据 -->
-						<value>/api/member/login</value><!-- 用户登录 -->
-						<value>/api/member/register</value><!-- 注册 -->
+						<value>/api/user/login</value><!-- 用户登录 -->
+
 						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->
-						<value>/api/apiCommon/share</value><!-- 统一分享 -->
-						<value>/api/apiCommon/checkUpdate</value><!-- 检查更新 -->
-						<value>/api/apiCommon/upload_errorlog</value><!-- app错误日志上传 -->
-
-						<value>/api/member/addDoctorInfo</value><!-- 医生注册第2步 -->
-						<value>/api/apiCommon/getLevels</value><!-- 获取职称列表 -->
-
 						<value>/api/pay/wxpay/notify</value><!-- 微信支付成功回调 -->
-						<value>/api/pay/alipay/notify</value><!-- 微信支付成功回调 -->
-
 						<value>/api/pay/wxpay/check</value><!-- 校验微信支付结果 -->
 					</list>
 				</property>

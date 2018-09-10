@@ -48,65 +48,73 @@
 				title : '商品ID',
 				width : 30
 				}, {
-				field : 'addtime',
-				title : '<%=TljzGoods.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'shopId',
-				title : '<%=TljzGoods.ALIAS_SHOP_ID%>',
-				width : 50		
-				}, {
 				field : 'title',
 				title : '<%=TljzGoods.ALIAS_TITLE%>',
-				width : 50		
+				width : 60
 				}, {
+                field : 'shopId',
+                title : '<%=TljzGoods.ALIAS_SHOP_ID%>',
+                width : 50
+            	}, {
+                field : 'icon',
+                title : '图标',
+                width : 50,
+                formatter : function(value, row, index) {
+                    var str = "";
+                    if(value){
+                        str = "<img style=\"height: 60px;width: 80px;\" src=\""+value+"\" />";
+                    }
+                    return str;
+                }
+            	}, {
 				field : 'price',
 				title : '<%=TljzGoods.ALIAS_PRICE%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'isPutAway',
 				title : '状态',
-				width : 50		
+				width : 30,
+                formatter : function(value, row, index) {
+                    return value == 0 ? '上架' : '下架';
+                }
 				}, {
 				field : 'limitNumber',
 				title : '<%=TljzGoods.ALIAS_LIMIT_NUMBER%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'freight',
 				title : '<%=TljzGoods.ALIAS_FREIGHT%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'shareAmount',
 				title : '<%=TljzGoods.ALIAS_SHARE_AMOUNT%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'prizePre',
 				title : '<%=TljzGoods.ALIAS_PRIZE_PRE%>',
-				width : 50		
-				}, {
-				field : 'prizeAmount',
-				title : '<%=TljzGoods.ALIAS_PRIZE_AMOUNT%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'prizeNumber',
 				title : '<%=TljzGoods.ALIAS_PRIZE_NUMBER%>',
-				width : 50		
+				width : 30
+            	}, {
+                field : 'addtime',
+                title : '<%=TljzGoods.ALIAS_ADDTIME%>',
+                width : 60
 			}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 30,
 				formatter : function(value, row, index) {
 					var str = '';
 					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
+                        str += '<a onclick="editFun(\'' + row.id + '\')">编辑</a>';
+						//str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
 					}
 					str += '&nbsp;';
 					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
+                        str += '<a onclick="deleteFun(\'' + row.id + '\')">删除</a>';
+						//str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
 					}
 					return str;
 				}
@@ -237,7 +245,12 @@
 							</td>
 							<th>状态</th>
 							<td>
-								<input type="text" name="isPutAway" maxlength="0" class="span2"/>
+								<select name="isPutAway" class="easyui-combobox"
+										data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+									<option value="">全部</option>
+									<option value="0">上架</option>
+									<option value="1">下架</option>
+								</select>
 							</td>
 						</tr>
 				</table>
@@ -251,7 +264,7 @@
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzGoodsController/addPage')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzGoodsController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

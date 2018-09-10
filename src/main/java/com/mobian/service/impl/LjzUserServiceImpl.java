@@ -1,24 +1,21 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mobian.absx.F;
 import com.mobian.dao.LjzUserDaoI;
 import com.mobian.model.TljzUser;
-import com.mobian.pageModel.LjzUser;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzUser;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzUserServiceI;
-
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzUserServiceI {
@@ -92,6 +89,7 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzUserDao.save(t);
+		ljzUser.setId(t.getId());
 	}
 
 	@Override
@@ -118,6 +116,20 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 		params.put("id", id);
 		ljzUserDao.executeHql("update TljzUser t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzUserDao.delete(ljzUserDao.get(TljzUser.class, id));
+	}
+
+	@Override
+	public LjzUser getByRef(String refId, String refType) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("refId", refId);
+		params.put("refType", refType);
+		TljzUser t = ljzUserDao.get("from TljzUser t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType", params);
+		if(t != null) {
+			LjzUser o = new LjzUser();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
 	}
 
 }

@@ -51,4 +51,5 @@ public interface LjzUserServiceI {
 	 */
 	public void delete(Integer id);
 
+	LjzUser getByRef(String refId, String refType);
 }

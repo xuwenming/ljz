@@ -122,7 +122,7 @@ public class TljzUser implements java.io.Serializable,IEntity{
 		this.nickName = nickName;
 	}
 	
-	@Column(name = "phone", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
+	@Column(name = "phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public java.lang.String getPhone() {
 		return this.phone;
 	}
