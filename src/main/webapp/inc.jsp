@@ -78,6 +78,10 @@
 	src="${pageContext.request.contextPath}/jslib/extJquery.js?v=201305301341"
 	charset="utf-8"></script>
 
+<!-- uploadify插件 -->
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/jslib/uploadify/uploadify.css">
+<script src="${pageContext.request.contextPath}/jslib/uploadify/jquery.uploadify.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jsencrypt.min.js" charset="utf-8"></script>
 
 

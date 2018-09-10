@@ -70,6 +70,7 @@ public class TljzGoods implements java.io.Serializable,IEntity{
 	private java.lang.String describtion;
 	//
 	private java.lang.Boolean isPutAway;
+	private java.lang.Integer quantity;
 	//
 	private java.lang.Integer limitNumber;
 	//
@@ -194,7 +195,16 @@ public class TljzGoods implements java.io.Serializable,IEntity{
 	public void setIsPutAway(java.lang.Boolean isPutAway) {
 		this.isPutAway = isPutAway;
 	}
-	
+
+	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
 	@Column(name = "limit_number", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public java.lang.Integer getLimitNumber() {
 		return this.limitNumber;

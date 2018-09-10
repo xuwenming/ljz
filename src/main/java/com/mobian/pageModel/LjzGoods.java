@@ -2,6 +2,7 @@ package com.mobian.pageModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class LjzGoods implements java.io.Serializable {
@@ -18,15 +19,16 @@ public class LjzGoods implements java.io.Serializable {
 	private java.lang.String icon;	
 	private java.lang.String imageUrl;	
 	private java.lang.String describtion;	
-	private java.lang.Boolean isPutAway;	
-	private java.lang.Integer limitNumber;	
-	private BigDecimal freight;	
+	private java.lang.Boolean isPutAway;
+	private java.lang.Integer quantity;
+	private java.lang.Integer limitNumber;
+	private BigDecimal freight;
 	private BigDecimal shareAmount;	
 	private java.lang.Integer prizePre;	
 	private BigDecimal prizeAmount;	
 	private java.lang.Integer prizeNumber;	
 
-	
+	private List<String> imageUrls;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -150,4 +152,19 @@ public class LjzGoods implements java.io.Serializable {
 		return this.prizeNumber;
 	}
 
+	public List<String> getImageUrls() {
+		return imageUrls;
+	}
+
+	public void setImageUrls(List<String> imageUrls) {
+		this.imageUrls = imageUrls;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 }

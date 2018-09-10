@@ -1,26 +1,22 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.LjzGoods;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.alibaba.fastjson.JSON;
+import com.mobian.absx.F;
+import com.mobian.pageModel.*;
 import com.mobian.service.LjzGoodsServiceI;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LjzGoods管理控制器
@@ -31,6 +27,8 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/ljzGoodsController")
 public class LjzGoodsController extends BaseController {
+
+	public static final String GOODS = "goods";
 
 	@Autowired
 	private LjzGoodsServiceI ljzGoodsService;
@@ -49,7 +47,8 @@ public class LjzGoodsController extends BaseController {
 	/**
 	 * 获取LjzGoods数据表格
 	 * 
-	 * @param user
+	 * @param
+	 *
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
@@ -60,7 +59,7 @@ public class LjzGoodsController extends BaseController {
 	/**
 	 * 获取LjzGoods数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -97,7 +96,10 @@ public class LjzGoodsController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(LjzGoods ljzGoods) {
-		Json j = new Json();		
+		Json j = new Json();
+		if(!F.empty(ljzGoods.getImageUrl())) {
+			ljzGoods.setIcon(ljzGoods.getImageUrl().split(";")[0]);
+		}
 		ljzGoodsService.add(ljzGoods);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -124,6 +126,14 @@ public class LjzGoodsController extends BaseController {
 	@RequestMapping("/editPage")
 	public String editPage(HttpServletRequest request, Integer id) {
 		LjzGoods ljzGoods = ljzGoodsService.get(id);
+		if(!F.empty(ljzGoods.getImageUrl())) {
+			List<String> imageUrls = new ArrayList<>();
+			for(String image : ljzGoods.getImageUrl().split(";")) {
+				if(F.empty(image)) continue;
+				imageUrls.add(image);
+			}
+			ljzGoods.setImageUrls(imageUrls);
+		}
 		request.setAttribute("ljzGoods", ljzGoods);
 		return "/ljzgoods/ljzGoodsEdit";
 	}
@@ -137,7 +147,10 @@ public class LjzGoodsController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(LjzGoods ljzGoods) {
-		Json j = new Json();		
+		Json j = new Json();
+		if(!F.empty(ljzGoods.getImageUrl())) {
+			ljzGoods.setIcon(ljzGoods.getImageUrl().split(";")[0]);
+		}
 		ljzGoodsService.edit(ljzGoods);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		
@@ -157,6 +170,25 @@ public class LjzGoodsController extends BaseController {
 		ljzGoodsService.delete(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 上传文件
+	 * @param
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/upload")
+	public Json upload(@RequestParam(required = false) MultipartFile imageFile) {
+		Json j = new Json();
+		try {
+			j.setObj(uploadFile(GOODS, imageFile));
+			j.success();
+		} catch (Exception e) {
+			j.fail();
+			e.printStackTrace();
+		}
 		return j;
 	}
 

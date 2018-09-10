@@ -122,7 +122,7 @@ public class OSSUtil {
     public static String putInputStream(String bucketName, InputStream inputStream, String key) {
         String url = "";
         if(!F.empty(bucketName) && !F.empty(key)) {
-            key = "ethealth/" + key;
+            key = "ljz/" + key;
             ossClient.putObject(bucketName, key, inputStream);
             url = cdnUrl + key;
         }
