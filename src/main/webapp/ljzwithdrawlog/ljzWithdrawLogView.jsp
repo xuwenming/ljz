@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.mobian.model.TljzWithdrawLog" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript">
+	$(function() {
+		parent.$.messager.progress('close');		
+	});
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'center',border:false">
+		<table class="table table-hover table-condensed">
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_ADDTIME%></th>	
+					<td>
+						${ljzWithdrawLog.addtime}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_UPDATETIME%></th>	
+					<td>
+						${ljzWithdrawLog.updatetime}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_ISDELETED%></th>	
+					<td>
+						${ljzWithdrawLog.isdeleted}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>	
+					<td>
+						${ljzWithdrawLog.withdrawNo}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>	
+					<td>
+						${ljzWithdrawLog.amount}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_SERVICE_AMT%></th>	
+					<td>
+						${ljzWithdrawLog.serviceAmt}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_USER_ID%></th>	
+					<td>
+						${ljzWithdrawLog.userId}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_CONTENT%></th>	
+					<td>
+						${ljzWithdrawLog.content}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
+					<td>
+						${ljzWithdrawLog.handleStatus}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
+					<td>
+						${ljzWithdrawLog.handleLoginId}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
+					<td>
+						${ljzWithdrawLog.handleRemark}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
+					<td>
+						${ljzWithdrawLog.handleTime}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_PAYMENT_NO%></th>	
+					<td>
+						${ljzWithdrawLog.paymentNo}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_CMMS_AMT%></th>	
+					<td>
+						${ljzWithdrawLog.cmmsAmt}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_REF_TYPE%></th>	
+					<td>
+						${ljzWithdrawLog.refType}							
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_APPLY_LOGIN_IP%></th>	
+					<td>
+						${ljzWithdrawLog.applyLoginIp}							
+					</td>							
+				</tr>		
+		</table>
+	</div>
+</div>

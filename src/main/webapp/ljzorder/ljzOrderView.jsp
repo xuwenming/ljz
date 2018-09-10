@@ -1,0 +1,90 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.mobian.model.TljzOrder" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript">
+	$(function() {
+		parent.$.messager.progress('close');		
+	});
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'center',border:false">
+		<table class="table table-hover table-condensed">
+				<tr>	
+					<th><%=TljzOrder.ALIAS_ADDTIME%></th>	
+					<td>
+						${ljzOrder.addtime}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_UPDATETIME%></th>	
+					<td>
+						${ljzOrder.updatetime}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_ISDELETED%></th>	
+					<td>
+						${ljzOrder.isdeleted}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_SHOP_ID%></th>	
+					<td>
+						${ljzOrder.shopId}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_USER_ID%></th>	
+					<td>
+						${ljzOrder.userId}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_TOTAL_PRICE%></th>	
+					<td>
+						${ljzOrder.totalPrice}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_STATUS%></th>	
+					<td>
+						${ljzOrder.status}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_DELIVERY_ADDRESS%></th>	
+					<td>
+						${ljzOrder.deliveryAddress}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_CONTACT_PHONE%></th>	
+					<td>
+						${ljzOrder.contactPhone}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_CONTACT_PEOPLE%></th>	
+					<td>
+						${ljzOrder.contactPeople}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_PAY_STATUS%></th>	
+					<td>
+						${ljzOrder.payStatus}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_PAY_WAY%></th>	
+					<td>
+						${ljzOrder.payWay}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_PAY_TIME%></th>	
+					<td>
+						${ljzOrder.payTime}							
+					</td>							
+					<th><%=TljzOrder.ALIAS_FREIGHT%></th>	
+					<td>
+						${ljzOrder.freight}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TljzOrder.ALIAS_RECOMMEND%></th>	
+					<td>
+						${ljzOrder.recommend}							
+					</td>							
+				</tr>		
+		</table>
+	</div>
+</div>
