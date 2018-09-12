@@ -17,6 +17,7 @@ public class LjzOrderItem implements java.io.Serializable {
 	private java.lang.Integer quantity;	
 	private BigDecimal buyPrice;
 
+	private String goodsTitle;
 	
 
 	public void setId(java.lang.Integer value) {
@@ -78,4 +79,11 @@ public class LjzOrderItem implements java.io.Serializable {
 		return this.buyPrice;
 	}
 
+	public String getGoodsTitle() {
+		return goodsTitle;
+	}
+
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
+	}
 }

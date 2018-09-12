@@ -18,7 +18,7 @@ public class LjzBalanceLog implements java.io.Serializable {
 	private java.lang.String refType;	
 	private java.lang.String remark;	
 
-	
+	private LjzUser user;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -86,4 +86,11 @@ public class LjzBalanceLog implements java.io.Serializable {
 		return this.remark;
 	}
 
+	public LjzUser getUser() {
+		return user;
+	}
+
+	public void setUser(LjzUser user) {
+		this.user = user;
+	}
 }

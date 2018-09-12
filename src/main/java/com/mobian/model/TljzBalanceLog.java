@@ -117,7 +117,7 @@ public class TljzBalanceLog implements java.io.Serializable,IEntity{
 		this.balanceId = balanceId;
 	}
 	
-	@Column(name = "amount", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
+	@Column(name = "amount", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
 	public BigDecimal getAmount() {
 		return this.amount;
 	}
@@ -144,7 +144,7 @@ public class TljzBalanceLog implements java.io.Serializable,IEntity{
 		this.refType = refType;
 	}
 	
-	@Column(name = "remark", unique = false, nullable = false, insertable = true, updatable = true, length = 512)
+	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public java.lang.String getRemark() {
 		return this.remark;
 	}

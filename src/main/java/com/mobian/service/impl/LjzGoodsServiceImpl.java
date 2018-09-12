@@ -144,4 +144,9 @@ public class LjzGoodsServiceImpl extends BaseServiceImpl<LjzGoods> implements Lj
 		//ljzGoodsDao.delete(ljzGoodsDao.get(TljzGoods.class, id));
 	}
 
+	@Override
+	public int reduceGoodsCount(Integer goodsId, Integer quantity) {
+		return ljzGoodsDao.executeHql("update TljzGoods t set t.quantity = t.quantity-" + quantity + " where t.id = " + goodsId + " and t.quantity >= " + quantity + " for update");
+	}
+
 }

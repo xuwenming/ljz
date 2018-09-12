@@ -9,10 +9,14 @@ import java.util.UUID;
 
 import com.mobian.absx.F;
 import com.mobian.dao.LjzOrderDaoI;
+import com.mobian.exception.ServiceException;
 import com.mobian.model.TljzOrder;
 import com.mobian.pageModel.LjzOrder;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzOrderItem;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.LjzGoodsServiceI;
+import com.mobian.service.LjzOrderItemServiceI;
 import com.mobian.service.LjzOrderServiceI;
 
 import org.springframework.beans.BeanUtils;
@@ -25,6 +29,12 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 
 	@Autowired
 	private LjzOrderDaoI ljzOrderDao;
+
+	@Autowired
+	private LjzOrderItemServiceI ljzOrderItemService;
+
+	@Autowired
+	private LjzGoodsServiceI ljzGoodsService;
 
 	@Override
 	public DataGrid dataGrid(LjzOrder ljzOrder, PageHelper ph) {
@@ -108,6 +118,7 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzOrderDao.save(t);
+		ljzOrder.setId(t.getId());
 	}
 
 	@Override
@@ -134,6 +145,23 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 		params.put("id", id);
 		ljzOrderDao.executeHql("update TljzOrder t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzOrderDao.delete(ljzOrderDao.get(TljzOrder.class, id));
+	}
+
+	@Override
+	public void addOrder(LjzOrder order) {
+		this.add(order);
+		//订单商品信息
+		List<LjzOrderItem> orderItemList = order.getOrderItemList();
+		if(orderItemList != null && orderItemList.size() > 0) {
+			for (LjzOrderItem orderItem : orderItemList) {
+				orderItem.setOrderId(order.getId());
+				ljzOrderItemService.add(orderItem);
+				int r = ljzGoodsService.reduceGoodsCount(orderItem.getGoodsId(), orderItem.getQuantity());
+				if(r < 1) {
+					throw new ServiceException(String.format("%s,库存不足", orderItem.getGoodsTitle()));
+				}
+			}
+		}
 	}
 
 }

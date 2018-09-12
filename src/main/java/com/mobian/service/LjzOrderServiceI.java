@@ -51,4 +51,5 @@ public interface LjzOrderServiceI {
 	 */
 	public void delete(Integer id);
 
+    void addOrder(LjzOrder order);
 }

@@ -1,24 +1,21 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mobian.absx.F;
 import com.mobian.dao.LjzBalanceLogDaoI;
 import com.mobian.model.TljzBalanceLog;
-import com.mobian.pageModel.LjzBalanceLog;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzBalanceLog;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzBalanceLogServiceI;
-
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> implements LjzBalanceLogServiceI {
@@ -110,6 +107,22 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 		params.put("id", id);
 		ljzBalanceLogDao.executeHql("update TljzBalanceLog t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzBalanceLogDao.delete(ljzBalanceLogDao.get(TljzBalanceLog.class, id));
+	}
+
+	@Override
+	public List<LjzBalanceLog> query(LjzBalanceLog balanceLog) {
+		List<LjzBalanceLog> ol = new ArrayList<>();
+		String hql = " from TljzBalanceLog t ";
+		@SuppressWarnings("unchecked")
+		List<TljzBalanceLog> l = query(hql, balanceLog, ljzBalanceLogDao, "addtime", "desc");
+		if (l != null && l.size() > 0) {
+			for (TljzBalanceLog t : l) {
+				LjzBalanceLog o = new LjzBalanceLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

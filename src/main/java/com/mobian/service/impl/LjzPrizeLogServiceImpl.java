@@ -68,7 +68,10 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 			if (!F.empty(ljzPrizeLog.getQuantity())) {
 				whereHql += " and t.quantity = :quantity";
 				params.put("quantity", ljzPrizeLog.getQuantity());
-			}		
+			}
+			if(!F.empty(ljzPrizeLog.getToday()) && ljzPrizeLog.getToday()) {
+				whereHql += " and DATEDIFF(t.addtime, NOW()) = 0";
+			}
 		}	
 		return whereHql;
 	}
@@ -106,6 +109,22 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 		params.put("id", id);
 		ljzPrizeLogDao.executeHql("update TljzPrizeLog t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzPrizeLogDao.delete(ljzPrizeLogDao.get(TljzPrizeLog.class, id));
+	}
+
+	@Override
+	public List<LjzPrizeLog> query(LjzPrizeLog prizeLog) {
+		List<LjzPrizeLog> ol = new ArrayList<>();
+		String hql = " from TljzPrizeLog t ";
+		@SuppressWarnings("unchecked")
+		List<TljzPrizeLog> l = query(hql, prizeLog, ljzPrizeLogDao, "quantity", "desc");
+		if (l != null && l.size() > 0) {
+			for (TljzPrizeLog t : l) {
+				LjzPrizeLog o = new LjzPrizeLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

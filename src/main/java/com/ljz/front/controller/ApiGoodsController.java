@@ -1,18 +1,15 @@
 package com.ljz.front.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
+import com.mobian.concurrent.CacheKey;
+import com.mobian.concurrent.CompletionService;
+import com.mobian.concurrent.Task;
 import com.mobian.controller.BaseController;
-import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.LjzGoods;
-import com.mobian.pageModel.LjzUser;
-import com.mobian.service.LjzGoodsServiceI;
-import com.mobian.service.LjzUserServiceI;
-import com.mobian.service.impl.RedisUserServiceImpl;
-import com.mobian.thirdpart.wx.HttpUtil;
-import com.mobian.thirdpart.wx.WeixinUtil;
+import com.mobian.pageModel.*;
+import com.mobian.service.*;
+import com.mobian.service.impl.CompletionFactory;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Created by guxin on 2017/4/22.
 *
 * 用户相关接口
 */
@@ -32,6 +28,18 @@ public class ApiGoodsController extends BaseController {
 
     @Autowired
     private LjzGoodsServiceI ljzGoodsService;
+
+    @Autowired
+    private LjzPrizeLogServiceI ljzPrizeLogService;
+
+    @Autowired
+    private LjzUserServiceI ljzUserService;
+
+    @Autowired
+    private LjzBalanceLogServiceI ljzBalanceLogService;
+
+    @Autowired
+    private LjzBalanceServiceI ljzBalanceService;
 
     /**
      * 获取商品详情
@@ -53,6 +61,7 @@ public class ApiGoodsController extends BaseController {
                 }
                 ljzGoods.setImageUrls(imageUrls);
             }
+
             j.success();
             j.setObj(ljzGoods);
         } catch (Exception e) {
@@ -62,5 +71,75 @@ public class ApiGoodsController extends BaseController {
         return j;
     }
 
+    /**
+     * 获取商品昨日消费中奖列表
+     * @return
+     */
+    @RequestMapping("/prizelog/list")
+    @ResponseBody
+    public Json prizeLogList(LjzPrizeLog prizeLog){
+        Json j = new Json();
+        try {
+            if(F.empty(prizeLog.getGoodsId()))
+                prizeLog.setGoodsId(Integer.valueOf(Application.getString("SV100", "6")));
+            prizeLog.setToday(true);
+            List<LjzPrizeLog> list = ljzPrizeLogService.query(prizeLog);
+            if(CollectionUtils.isNotEmpty(list)) {
+                for(LjzPrizeLog log : list) {
+                    log.setUser(ljzUserService.get(log.getUserId()));
+                }
+            }
+            j.success();
+            j.setObj(list);
+        } catch (Exception e) {
+            logger.error("获取商品详情接口异常", e);
+        }
 
+        return j;
+    }
+
+    /**
+     * 获取商品转发提现名单
+     * @return
+     */
+    @RequestMapping("/sharelog/list")
+    @ResponseBody
+    public Json shareLogList(Integer id){
+        Json j = new Json();
+        try {
+            if(F.empty(id))
+                id = Integer.valueOf(Application.getString("SV100", "6"));
+            LjzBalanceLog balanceLog = new LjzBalanceLog();
+            balanceLog.setRefId(id);
+            balanceLog.setRefType("BBT005"); // 转发赚取
+            List<LjzBalanceLog> list = ljzBalanceLogService.query(balanceLog);
+            if(CollectionUtils.isNotEmpty(list)) {
+                CompletionService completionService = CompletionFactory.initCompletion();
+                for(LjzBalanceLog log : list) {
+                    completionService.submit(new Task<LjzBalanceLog, LjzUser>(new CacheKey("ljzBalance", log.getBalanceId() + ""), log) {
+                        @Override
+                        public LjzUser call() throws Exception {
+                            LjzUser user = new LjzUser();
+                            LjzBalance balance = ljzBalanceService.get(getD().getBalanceId());
+                            if(balance != null) {
+                                user = ljzUserService.get(balance.getRefId());
+                            }
+                            return user;
+                        }
+
+                        protected void set(LjzBalanceLog d, LjzUser v) {
+                            d.setUser(v);
+                        }
+                    });
+                }
+                completionService.sync();
+            }
+            j.success();
+            j.setObj(list);
+        } catch (Exception e) {
+            logger.error("获取商品详情接口异常", e);
+        }
+
+        return j;
+    }
 }

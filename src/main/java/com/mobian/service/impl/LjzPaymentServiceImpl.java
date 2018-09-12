@@ -1,24 +1,21 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mobian.absx.F;
 import com.mobian.dao.LjzPaymentDaoI;
 import com.mobian.model.TljzPayment;
-import com.mobian.pageModel.LjzPayment;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzPayment;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzPaymentServiceI;
-
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implements LjzPaymentServiceI {
@@ -106,6 +103,17 @@ public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implement
 		params.put("id", id);
 		ljzPaymentDao.executeHql("update TljzPayment t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzPaymentDao.delete(ljzPaymentDao.get(TljzPayment.class, id));
+	}
+
+	@Override
+	public LjzPayment getByOrderId(Integer orderId) {
+		TljzPayment t = ljzPaymentDao.get("from TljzPayment t where t.orderId = " + orderId);
+		if (t != null) {
+			LjzPayment o = new LjzPayment();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
 	}
 
 }

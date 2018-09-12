@@ -17,7 +17,8 @@ public class LjzPrizeLog implements java.io.Serializable {
 	private BigDecimal amount;
 	private java.lang.Integer quantity;	
 
-	
+	private Boolean isToday;
+	private LjzUser user;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -78,4 +79,19 @@ public class LjzPrizeLog implements java.io.Serializable {
 		return this.quantity;
 	}
 
+	public Boolean getToday() {
+		return isToday;
+	}
+
+	public void setToday(Boolean today) {
+		isToday = today;
+	}
+
+	public LjzUser getUser() {
+		return user;
+	}
+
+	public void setUser(LjzUser user) {
+		this.user = user;
+	}
 }

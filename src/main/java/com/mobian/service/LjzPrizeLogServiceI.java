@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzPrizeLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,5 @@ public interface LjzPrizeLogServiceI {
 	 */
 	public void delete(Integer id);
 
+	List<LjzPrizeLog> query(LjzPrizeLog prizeLog);
 }

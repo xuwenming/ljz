@@ -2,6 +2,7 @@ package com.mobian.pageModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class LjzOrder implements java.io.Serializable {
@@ -25,7 +26,7 @@ public class LjzOrder implements java.io.Serializable {
 	private BigDecimal freight;	
 	private java.lang.Integer recommend;	
 
-	
+	private List<LjzOrderItem> orderItemList;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -142,4 +143,11 @@ public class LjzOrder implements java.io.Serializable {
 		return this.recommend;
 	}
 
+	public List<LjzOrderItem> getOrderItemList() {
+		return orderItemList;
+	}
+
+	public void setOrderItemList(List<LjzOrderItem> orderItemList) {
+		this.orderItemList = orderItemList;
+	}
 }

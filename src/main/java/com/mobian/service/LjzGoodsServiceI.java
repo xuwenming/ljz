@@ -51,4 +51,5 @@ public interface LjzGoodsServiceI {
 	 */
 	public void delete(Integer id);
 
+    int reduceGoodsCount(Integer goodsId, Integer quantity);
 }
