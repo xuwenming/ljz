@@ -82,7 +82,7 @@ public class ApiGoodsController extends BaseController {
         try {
             if(F.empty(prizeLog.getGoodsId()))
                 prizeLog.setGoodsId(Integer.valueOf(Application.getString("SV100", "6")));
-            prizeLog.setToday(true);
+//            prizeLog.setToday(true);
             List<LjzPrizeLog> list = ljzPrizeLogService.query(prizeLog);
             if(CollectionUtils.isNotEmpty(list)) {
                 for(LjzPrizeLog log : list) {
