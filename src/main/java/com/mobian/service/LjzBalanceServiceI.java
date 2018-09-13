@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzBalance;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.math.BigDecimal;
+
 /**
  * 
  * @author John
@@ -51,4 +53,7 @@ public interface LjzBalanceServiceI {
 	 */
 	public void delete(Integer id);
 
+    LjzBalance addOrGetBalance(Integer refId);
+
+	LjzBalance addOrGetBalance(Integer refId, Integer refType, BigDecimal initAmount);
 }

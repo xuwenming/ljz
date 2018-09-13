@@ -50,8 +50,9 @@ public class TljzBalance implements java.io.Serializable,IEntity{
 	private BigDecimal amount;
 	//
 	private java.lang.Integer refId;
+
 	//
-	private java.lang.Boolean refType;
+	private java.lang.Integer refType;
 	//columns END
 
 
@@ -115,20 +116,19 @@ public class TljzBalance implements java.io.Serializable,IEntity{
 	public java.lang.Integer getRefId() {
 		return this.refId;
 	}
-	
+
 	public void setRefId(java.lang.Integer refId) {
 		this.refId = refId;
 	}
-	
+
 	@Column(name = "ref_type", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
-	public java.lang.Boolean getRefType() {
-		return this.refType;
+	public Integer getRefType() {
+		return refType;
 	}
-	
-	public void setRefType(java.lang.Boolean refType) {
+
+	public void setRefType(Integer refType) {
 		this.refType = refType;
 	}
-	
 	
 	/*
 	public String toString() {

@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzWithdrawLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,9 @@ public interface LjzWithdrawLogServiceI {
 	 */
 	public void delete(Integer id);
 
+	LjzWithdrawLog get(LjzWithdrawLog log);
+
+    List<LjzWithdrawLog> query(LjzWithdrawLog log);
+
+	void addAndBalance(LjzWithdrawLog withdrawLog);
 }

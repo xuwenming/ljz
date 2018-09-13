@@ -1,30 +1,34 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mobian.absx.F;
 import com.mobian.dao.LjzWithdrawLogDaoI;
 import com.mobian.model.TljzWithdrawLog;
-import com.mobian.pageModel.LjzWithdrawLog;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzBalanceLog;
+import com.mobian.pageModel.LjzWithdrawLog;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.LjzBalanceLogServiceI;
 import com.mobian.service.LjzWithdrawLogServiceI;
-
+import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> implements LjzWithdrawLogServiceI {
 
 	@Autowired
 	private LjzWithdrawLogDaoI ljzWithdrawLogDao;
+
+	@Autowired
+	private LjzBalanceLogServiceI ljzBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(LjzWithdrawLog ljzWithdrawLog, PageHelper ph) {
@@ -69,6 +73,14 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 				whereHql += " and t.userId = :userId";
 				params.put("userId", ljzWithdrawLog.getUserId());
 			}		
+			if (!F.empty(ljzWithdrawLog.getRealName())) {
+				whereHql += " and t.realName = :realName";
+				params.put("realName", ljzWithdrawLog.getRealName());
+			}		
+			if (!F.empty(ljzWithdrawLog.getPhone())) {
+				whereHql += " and t.phone = :phone";
+				params.put("phone", ljzWithdrawLog.getPhone());
+			}		
 			if (!F.empty(ljzWithdrawLog.getContent())) {
 				whereHql += " and t.content = :content";
 				params.put("content", ljzWithdrawLog.getContent());
@@ -100,7 +112,10 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 			if (!F.empty(ljzWithdrawLog.getApplyLoginIp())) {
 				whereHql += " and t.applyLoginIp = :applyLoginIp";
 				params.put("applyLoginIp", ljzWithdrawLog.getApplyLoginIp());
-			}		
+			}
+			if (ljzWithdrawLog.getAddtime() != null) {
+				whereHql += " and to_days(t.addtime) = to_days(now())";
+			}
 		}	
 		return whereHql;
 	}
@@ -112,6 +127,7 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzWithdrawLogDao.save(t);
+		ljzWithdrawLog.setId(t.getId());
 	}
 
 	@Override
@@ -138,6 +154,58 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 		params.put("id", id);
 		ljzWithdrawLogDao.executeHql("update TljzWithdrawLog t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzWithdrawLogDao.delete(ljzWithdrawLogDao.get(TljzWithdrawLog.class, id));
+	}
+
+	@Override
+	public LjzWithdrawLog get(LjzWithdrawLog log) {
+		String hql = " from TljzWithdrawLog t ";
+		@SuppressWarnings("unchecked")
+		List<TljzWithdrawLog> l = query(hql, log, ljzWithdrawLogDao, "addtime", "desc");
+		LjzWithdrawLog o = null;
+		if (CollectionUtils.isNotEmpty(l)) {
+			o = new LjzWithdrawLog();
+			BeanUtils.copyProperties(l.get(0), o);
+		}
+		return o;
+	}
+
+	@Override
+	public List<LjzWithdrawLog> query(LjzWithdrawLog log) {
+		List<LjzWithdrawLog> ol = new ArrayList<>();
+		String hql = " from TljzWithdrawLog t ";
+		@SuppressWarnings("unchecked")
+		List<TljzWithdrawLog> l = query(hql, log, ljzWithdrawLogDao, "addtime", "desc");
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TljzWithdrawLog t : l) {
+				LjzWithdrawLog o = new LjzWithdrawLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
+	public void addAndBalance(LjzWithdrawLog withdrawLog) {
+		add(withdrawLog);
+
+		// 提现扣除钱包余额
+		LjzBalanceLog balanceLog = new LjzBalanceLog();
+		balanceLog.setUserId(withdrawLog.getUserId());
+		balanceLog.setRefType(withdrawLog.getRefType());
+		balanceLog.setRefId(withdrawLog.getId());
+		balanceLog.setAmount(withdrawLog.getAmount().multiply(BigDecimal.valueOf(-1)));
+		ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
+
+		// 提现手续费扣除钱包余额
+		if(withdrawLog.getServiceAmt() != null && withdrawLog.getServiceAmt().doubleValue() > 0) {
+			balanceLog = new LjzBalanceLog();
+			balanceLog.setUserId(withdrawLog.getUserId());
+			balanceLog.setRefType("BBT008");
+			balanceLog.setRefId(withdrawLog.getId());
+			balanceLog.setAmount(withdrawLog.getServiceAmt().multiply(BigDecimal.valueOf(-1)));
+			ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
+		}
 	}
 
 }

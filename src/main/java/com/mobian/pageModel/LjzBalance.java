@@ -14,7 +14,7 @@ public class LjzBalance implements java.io.Serializable {
 	private java.lang.Boolean isdeleted;	
 	private BigDecimal amount;
 	private java.lang.Integer refId;	
-	private java.lang.Boolean refType;	
+	private java.lang.Integer refType;
 
 	
 
@@ -62,12 +62,12 @@ public class LjzBalance implements java.io.Serializable {
 	public java.lang.Integer getRefId() {
 		return this.refId;
 	}
-	public void setRefType(java.lang.Boolean refType) {
-		this.refType = refType;
-	}
-	
-	public java.lang.Boolean getRefType() {
-		return this.refType;
+
+	public Integer getRefType() {
+		return refType;
 	}
 
+	public void setRefType(Integer refType) {
+		this.refType = refType;
+	}
 }

@@ -13,9 +13,9 @@ public abstract class BaseServiceImpl<T> {
 	protected String orderHql(PageHelper ph) {
 		String orderString = "";
 		if (ph.getSort() != null && ph.getOrder() != null) {
-			if(ph.getSort().equalsIgnoreCase("id")){
-				ph.setSort("addtime");
-			}
+//			if(ph.getSort().equalsIgnoreCase("id")){
+//				ph.setSort("addtime");
+//			}
 			orderString = " order by t." + ph.getSort() + " " + ph.getOrder();
 		}
 		return orderString;

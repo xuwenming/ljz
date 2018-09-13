@@ -52,6 +52,7 @@ public class TljzBalanceLog implements java.io.Serializable,IEntity{
 	private java.lang.Integer balanceId;
 	//@NotNull 
 	private BigDecimal amount;
+	private BigDecimal balanceAmount;
 	//
 	private java.lang.Integer refId;
 	//@Length(max=10)
@@ -125,7 +126,16 @@ public class TljzBalanceLog implements java.io.Serializable,IEntity{
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
-	
+
+	@Column(name = "balance_amount", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
+	public BigDecimal getBalanceAmount() {
+		return balanceAmount;
+	}
+
+	public void setBalanceAmount(BigDecimal balanceAmount) {
+		this.balanceAmount = balanceAmount;
+	}
+
 	@Column(name = "ref_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public java.lang.Integer getRefId() {
 		return this.refId;

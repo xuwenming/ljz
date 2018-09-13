@@ -1,6 +1,6 @@
 /*
  * @author John
- * @date - 2018-09-10
+ * @date - 2018-09-13
  */
 
 package com.mobian.model;
@@ -31,6 +31,8 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 	public static final String ALIAS_AMOUNT = "提现金额";
 	public static final String ALIAS_SERVICE_AMT = "手续费";
 	public static final String ALIAS_USER_ID = "申请人ID";
+	public static final String ALIAS_REAL_NAME = "真实姓名";
+	public static final String ALIAS_PHONE = "手机号";
 	public static final String ALIAS_CONTENT = "申请备注";
 	public static final String ALIAS_HANDLE_STATUS = "处理状态";
 	public static final String ALIAS_HANDLE_LOGIN_ID = "处理人";
@@ -50,39 +52,43 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 	//可以直接使用: @Length(max=50,message="用户名长度不能大于50")显示错误消息
 	//columns START
 	//
-	private java.lang.Integer id;
+	private Integer id;
 	//@NotNull 
-	private java.util.Date addtime;
+	private Date addtime;
 	//@NotNull 
-	private java.util.Date updatetime;
+	private Date updatetime;
 	//@NotNull 
-	private java.lang.Boolean isdeleted;
+	private Boolean isdeleted;
 	//@Length(max=64)
-	private java.lang.String withdrawNo;
+	private String withdrawNo;
 	//@NotNull 
 	private BigDecimal amount;
 	//
 	private BigDecimal serviceAmt;
-	//@Length(max=36)
-	private java.lang.String userId;
-	//@Length(max=512)
-	private java.lang.String content;
-	//@Length(max=4)
-	private java.lang.String handleStatus;
-	//@Length(max=36)
-	private java.lang.String handleLoginId;
-	//@Length(max=512)
-	private java.lang.String handleRemark;
 	//
-	private java.util.Date handleTime;
+	private Integer userId;
+	//@Length(max=128)
+	private String realName;
+	//@Length(max=32)
+	private String phone;
+	//@Length(max=512)
+	private String content;
+	//@Length(max=4)
+	private String handleStatus;
+	//@Length(max=36)
+	private String handleLoginId;
+	//@Length(max=512)
+	private String handleRemark;
+	//
+	private Date handleTime;
 	//@Length(max=64)
-	private java.lang.String paymentNo;
+	private String paymentNo;
 	//
 	private BigDecimal cmmsAmt;
 	//@Length(max=10)
-	private java.lang.String refType;
+	private String refType;
 	//@Length(max=64)
-	private java.lang.String applyLoginIp;
+	private String applyLoginIp;
 	//columns END
 
 
@@ -93,52 +99,52 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 		}
 	
 
-	public void setId(java.lang.Integer id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return this.id;
 	}
 	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
-	public java.util.Date getAddtime() {
+	public Date getAddtime() {
 		return this.addtime;
 	}
 	
-	public void setAddtime(java.util.Date addtime) {
+	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
 	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
-	public java.util.Date getUpdatetime() {
+	public Date getUpdatetime() {
 		return this.updatetime;
 	}
 	
-	public void setUpdatetime(java.util.Date updatetime) {
+	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
 	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
-	public java.lang.Boolean getIsdeleted() {
+	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
 	
-	public void setIsdeleted(java.lang.Boolean isdeleted) {
+	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
 	
 	@Column(name = "withdraw_no", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
-	public java.lang.String getWithdrawNo() {
+	public String getWithdrawNo() {
 		return this.withdrawNo;
 	}
 	
-	public void setWithdrawNo(java.lang.String withdrawNo) {
+	public void setWithdrawNo(String withdrawNo) {
 		this.withdrawNo = withdrawNo;
 	}
 	
@@ -160,67 +166,85 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 		this.serviceAmt = serviceAmt;
 	}
 	
-	@Column(name = "user_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
-	public java.lang.String getUserId() {
+	@Column(name = "user_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getUserId() {
 		return this.userId;
 	}
 	
-	public void setUserId(java.lang.String userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	
+	@Column(name = "real_name", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public String getRealName() {
+		return this.realName;
+	}
+	
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+	
+	@Column(name = "phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getPhone() {
+		return this.phone;
+	}
+	
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
 	@Column(name = "content", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
-	public java.lang.String getContent() {
+	public String getContent() {
 		return this.content;
 	}
 	
-	public void setContent(java.lang.String content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	
 	@Column(name = "handle_status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
-	public java.lang.String getHandleStatus() {
+	public String getHandleStatus() {
 		return this.handleStatus;
 	}
 	
-	public void setHandleStatus(java.lang.String handleStatus) {
+	public void setHandleStatus(String handleStatus) {
 		this.handleStatus = handleStatus;
 	}
 	
 	@Column(name = "handle_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
-	public java.lang.String getHandleLoginId() {
+	public String getHandleLoginId() {
 		return this.handleLoginId;
 	}
 	
-	public void setHandleLoginId(java.lang.String handleLoginId) {
+	public void setHandleLoginId(String handleLoginId) {
 		this.handleLoginId = handleLoginId;
 	}
 	
 	@Column(name = "handle_remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
-	public java.lang.String getHandleRemark() {
+	public String getHandleRemark() {
 		return this.handleRemark;
 	}
 	
-	public void setHandleRemark(java.lang.String handleRemark) {
+	public void setHandleRemark(String handleRemark) {
 		this.handleRemark = handleRemark;
 	}
 	
 
 	@Column(name = "handle_time", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
-	public java.util.Date getHandleTime() {
+	public Date getHandleTime() {
 		return this.handleTime;
 	}
 	
-	public void setHandleTime(java.util.Date handleTime) {
+	public void setHandleTime(Date handleTime) {
 		this.handleTime = handleTime;
 	}
 	
 	@Column(name = "payment_no", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
-	public java.lang.String getPaymentNo() {
+	public String getPaymentNo() {
 		return this.paymentNo;
 	}
 	
-	public void setPaymentNo(java.lang.String paymentNo) {
+	public void setPaymentNo(String paymentNo) {
 		this.paymentNo = paymentNo;
 	}
 	
@@ -234,20 +258,20 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 	}
 	
 	@Column(name = "ref_type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.String getRefType() {
+	public String getRefType() {
 		return this.refType;
 	}
 	
-	public void setRefType(java.lang.String refType) {
+	public void setRefType(String refType) {
 		this.refType = refType;
 	}
 	
 	@Column(name = "apply_login_ip", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
-	public java.lang.String getApplyLoginIp() {
+	public String getApplyLoginIp() {
 		return this.applyLoginIp;
 	}
 	
-	public void setApplyLoginIp(java.lang.String applyLoginIp) {
+	public void setApplyLoginIp(String applyLoginIp) {
 		this.applyLoginIp = applyLoginIp;
 	}
 	
@@ -263,6 +287,8 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 			.append("Amount",getAmount())
 			.append("ServiceAmt",getServiceAmt())
 			.append("UserId",getUserId())
+			.append("RealName",getRealName())
+			.append("Phone",getPhone())
 			.append("Content",getContent())
 			.append("HandleStatus",getHandleStatus())
 			.append("HandleLoginId",getHandleLoginId())

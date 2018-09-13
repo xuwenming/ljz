@@ -54,4 +54,6 @@ public interface LjzBalanceLogServiceI {
 	public void delete(Integer id);
 
     List<LjzBalanceLog> query(LjzBalanceLog balanceLog);
+
+    void addLogAndUpdateBalance(LjzBalanceLog balanceLog);
 }

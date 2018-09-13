@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.listener.Application;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -14,11 +16,17 @@ public class LjzBalanceLog implements java.io.Serializable {
 	private java.lang.Boolean isdeleted;	
 	private java.lang.Integer balanceId;	
 	private BigDecimal amount;
-	private java.lang.Integer refId;	
+	private BigDecimal balanceAmount;
+	private java.lang.Integer refId;
 	private java.lang.String refType;	
 	private java.lang.String remark;	
 
+	private Integer userId;
 	private LjzUser user;
+
+	public String getRefTypeName() {
+		return Application.getString(refType);
+	}
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -64,6 +72,15 @@ public class LjzBalanceLog implements java.io.Serializable {
 	public BigDecimal getAmount() {
 		return this.amount;
 	}
+
+	public BigDecimal getBalanceAmount() {
+		return balanceAmount;
+	}
+
+	public void setBalanceAmount(BigDecimal balanceAmount) {
+		this.balanceAmount = balanceAmount;
+	}
+
 	public void setRefId(java.lang.Integer refId) {
 		this.refId = refId;
 	}
@@ -92,5 +109,13 @@ public class LjzBalanceLog implements java.io.Serializable {
 
 	public void setUser(LjzUser user) {
 		this.user = user;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 }

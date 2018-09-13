@@ -1,17 +1,22 @@
 package com.mobian.service.impl;
 
 import com.mobian.absx.F;
+import com.mobian.dao.LjzBalanceDaoI;
 import com.mobian.dao.LjzBalanceLogDaoI;
+import com.mobian.exception.ServiceException;
 import com.mobian.model.TljzBalanceLog;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzBalance;
 import com.mobian.pageModel.LjzBalanceLog;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzBalanceLogServiceI;
+import com.mobian.service.LjzBalanceServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +27,12 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 
 	@Autowired
 	private LjzBalanceLogDaoI ljzBalanceLogDao;
+
+	@Autowired
+	private LjzBalanceServiceI ljzBalanceService;
+
+	@Autowired
+	private LjzBalanceDaoI ljzBalanceDao;
 
 	@Override
 	public DataGrid dataGrid(LjzBalanceLog ljzBalanceLog, PageHelper ph) {
@@ -81,6 +92,23 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzBalanceLogDao.save(t);
+	}
+
+	@Override
+	public void addLogAndUpdateBalance(LjzBalanceLog mbBalanceLog) {
+		if (mbBalanceLog.getAmount() == null) {
+			throw new ServiceException("余额不允许为null");
+		}
+		LjzBalance balance = ljzBalanceService.addOrGetBalance(mbBalanceLog.getUserId());
+		BigDecimal amount = ljzBalanceDao.getAmountById(balance.getId());
+		mbBalanceLog.setBalanceId(balance.getId());
+		mbBalanceLog.setBalanceAmount(amount.add(mbBalanceLog.getAmount()));
+		add(mbBalanceLog);
+
+		int i = ljzBalanceDao.executeHql("update TljzBalance t set t.amount=amount+" + mbBalanceLog.getAmount() + " where t.id=" + mbBalanceLog.getBalanceId());
+		if (i != 1) {
+			throw new ServiceException("余额更新失败");
+		}
 	}
 
 	@Override

@@ -1,24 +1,23 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.mobian.absx.F;
 import com.mobian.dao.LjzBalanceDaoI;
+import com.mobian.exception.ServiceException;
 import com.mobian.model.TljzBalance;
-import com.mobian.pageModel.LjzBalance;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzBalance;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzBalanceServiceI;
-
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class LjzBalanceServiceImpl extends BaseServiceImpl<LjzBalance> implements LjzBalanceServiceI {
@@ -102,6 +101,34 @@ public class LjzBalanceServiceImpl extends BaseServiceImpl<LjzBalance> implement
 		params.put("id", id);
 		ljzBalanceDao.executeHql("update TljzBalance t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzBalanceDao.delete(ljzBalanceDao.get(TljzBalance.class, id));
+	}
+
+	@Override
+	public LjzBalance addOrGetBalance(Integer refId) {
+		return addOrGetBalance(refId, 2, BigDecimal.ZERO);
+	}
+
+	@Override
+	public LjzBalance addOrGetBalance(Integer refId, Integer refType, BigDecimal initAmount) {
+		LjzBalance o;
+		TljzBalance t = ljzBalanceDao.get("from TljzBalance t where t.isdeleted = 0 and t.refType = " + refType + " and refId=" + refId);
+		if(t != null && t.getId() != null) {
+			o = new LjzBalance();
+			BeanUtils.copyProperties(t, o);
+		} else {
+			if(refId == null)
+				throw new ServiceException("refId 不能为空");
+			if(refType == null)
+				throw new ServiceException("refType 不能为空");
+			if(refType == null)
+				throw new ServiceException("initAmount 不能为空");
+			o = new LjzBalance();
+			o.setAmount(initAmount);
+			o.setRefId(refId);
+			o.setRefType(refType);
+			add(o);
+		}
+		return o;
 	}
 
 }

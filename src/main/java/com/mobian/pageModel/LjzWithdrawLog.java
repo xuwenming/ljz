@@ -8,31 +8,33 @@ public class LjzWithdrawLog implements java.io.Serializable {
 
 	private static final long serialVersionUID = 5454155825314635342L;
 
-	private java.lang.Integer id;	
+	private Integer id;
 	private Date addtime;			
 	private Date updatetime;			
-	private java.lang.Boolean isdeleted;	
-	private java.lang.String withdrawNo;	
+	private Boolean isdeleted;
+	private String withdrawNo;
 	private BigDecimal amount;	
 	private BigDecimal serviceAmt;
-	private java.lang.String userId;	
-	private java.lang.String content;	
-	private java.lang.String handleStatus;	
-	private java.lang.String handleLoginId;	
-	private java.lang.String handleRemark;	
+	private Integer userId;
+	private String realName;
+	private String phone;
+	private String content;
+	private String handleStatus;
+	private String handleLoginId;
+	private String handleRemark;
 	private Date handleTime;			
-	private java.lang.String paymentNo;	
+	private String paymentNo;
 	private BigDecimal cmmsAmt;	
-	private java.lang.String refType;	
-	private java.lang.String applyLoginIp;	
+	private String refType;
+	private String applyLoginIp;
 
 	
 
-	public void setId(java.lang.Integer value) {
+	public void setId(Integer value) {
 		this.id = value;
 	}
 	
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
@@ -51,18 +53,18 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-	public void setIsdeleted(java.lang.Boolean isdeleted) {
+	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
 	
-	public java.lang.Boolean getIsdeleted() {
+	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-	public void setWithdrawNo(java.lang.String withdrawNo) {
+	public void setWithdrawNo(String withdrawNo) {
 		this.withdrawNo = withdrawNo;
 	}
 	
-	public java.lang.String getWithdrawNo() {
+	public String getWithdrawNo() {
 		return this.withdrawNo;
 	}
 	public void setAmount(BigDecimal amount) {
@@ -79,39 +81,53 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	public BigDecimal getServiceAmt() {
 		return this.serviceAmt;
 	}
-	public void setUserId(java.lang.String userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	
-	public java.lang.String getUserId() {
+	public Integer getUserId() {
 		return this.userId;
 	}
-	public void setContent(java.lang.String content) {
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+	
+	public String getRealName() {
+		return this.realName;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	public String getPhone() {
+		return this.phone;
+	}
+	public void setContent(String content) {
 		this.content = content;
 	}
 	
-	public java.lang.String getContent() {
+	public String getContent() {
 		return this.content;
 	}
-	public void setHandleStatus(java.lang.String handleStatus) {
+	public void setHandleStatus(String handleStatus) {
 		this.handleStatus = handleStatus;
 	}
 	
-	public java.lang.String getHandleStatus() {
+	public String getHandleStatus() {
 		return this.handleStatus;
 	}
-	public void setHandleLoginId(java.lang.String handleLoginId) {
+	public void setHandleLoginId(String handleLoginId) {
 		this.handleLoginId = handleLoginId;
 	}
 	
-	public java.lang.String getHandleLoginId() {
+	public String getHandleLoginId() {
 		return this.handleLoginId;
 	}
-	public void setHandleRemark(java.lang.String handleRemark) {
+	public void setHandleRemark(String handleRemark) {
 		this.handleRemark = handleRemark;
 	}
 	
-	public java.lang.String getHandleRemark() {
+	public String getHandleRemark() {
 		return this.handleRemark;
 	}
 	public void setHandleTime(Date handleTime) {
@@ -121,11 +137,11 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	public Date getHandleTime() {
 		return this.handleTime;
 	}
-	public void setPaymentNo(java.lang.String paymentNo) {
+	public void setPaymentNo(String paymentNo) {
 		this.paymentNo = paymentNo;
 	}
 	
-	public java.lang.String getPaymentNo() {
+	public String getPaymentNo() {
 		return this.paymentNo;
 	}
 	public void setCmmsAmt(BigDecimal cmmsAmt) {
@@ -135,18 +151,18 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	public BigDecimal getCmmsAmt() {
 		return this.cmmsAmt;
 	}
-	public void setRefType(java.lang.String refType) {
+	public void setRefType(String refType) {
 		this.refType = refType;
 	}
 	
-	public java.lang.String getRefType() {
+	public String getRefType() {
 		return this.refType;
 	}
-	public void setApplyLoginIp(java.lang.String applyLoginIp) {
+	public void setApplyLoginIp(String applyLoginIp) {
 		this.applyLoginIp = applyLoginIp;
 	}
 	
-	public java.lang.String getApplyLoginIp() {
+	public String getApplyLoginIp() {
 		return this.applyLoginIp;
 	}
 
