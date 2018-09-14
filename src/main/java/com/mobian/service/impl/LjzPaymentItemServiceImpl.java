@@ -112,4 +112,17 @@ public class LjzPaymentItemServiceImpl extends BaseServiceImpl<LjzPaymentItem> i
 		//ljzPaymentItemDao.delete(ljzPaymentItemDao.get(TljzPaymentItem.class, id));
 	}
 
+	@Override
+	public LjzPaymentItem getByPaymentId(Integer paymentId) {
+		LjzPaymentItem o = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("paymentId", paymentId);
+		TljzPaymentItem t = ljzPaymentItemDao.get("from TljzPaymentItem t  where t.paymentId = :paymentId", params);
+		if(t != null) {
+			o = new LjzPaymentItem();
+			BeanUtils.copyProperties(t, o);
+		}
+		return o;
+	}
+
 }

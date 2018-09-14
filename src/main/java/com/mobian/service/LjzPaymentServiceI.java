@@ -52,4 +52,6 @@ public interface LjzPaymentServiceI {
 	public void delete(Integer id);
 
     LjzPayment getByOrderId(Integer orderId);
+
+    void addOrUpdate(LjzPayment payment);
 }

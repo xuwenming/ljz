@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,5 @@ public interface LjzOrderItemServiceI {
 	 */
 	public void delete(Integer id);
 
+    List<LjzOrderItem> queryByOrderId(Integer orderId);
 }

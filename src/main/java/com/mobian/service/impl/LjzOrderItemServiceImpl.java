@@ -10,11 +10,14 @@ import java.util.UUID;
 import com.mobian.absx.F;
 import com.mobian.dao.LjzOrderItemDaoI;
 import com.mobian.model.TljzOrderItem;
+import com.mobian.model.TljzWithdrawLog;
 import com.mobian.pageModel.LjzOrderItem;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzWithdrawLog;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzOrderItemServiceI;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,6 +109,22 @@ public class LjzOrderItemServiceImpl extends BaseServiceImpl<LjzOrderItem> imple
 		params.put("id", id);
 		ljzOrderItemDao.executeHql("update TljzOrderItem t set t.isdeleted = 1 where t.id = :id",params);
 		//ljzOrderItemDao.delete(ljzOrderItemDao.get(TljzOrderItem.class, id));
+	}
+
+	@Override
+	public List<LjzOrderItem> queryByOrderId(Integer orderId) {
+		List<LjzOrderItem> ol = new ArrayList<>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("orderId", orderId);
+		List<TljzOrderItem> l = ljzOrderItemDao.find("from TljzOrderItem t  where t.orderId = :orderId", params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TljzOrderItem t : l) {
+				LjzOrderItem o = new LjzOrderItem();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

@@ -17,6 +17,7 @@ public class LjzPayment implements java.io.Serializable {
 	private java.lang.String payWay;	
 	private java.lang.Boolean status;	
 
+	private String refId;
 	
 
 	public void setId(java.lang.Integer value) {
@@ -78,4 +79,11 @@ public class LjzPayment implements java.io.Serializable {
 		return this.status;
 	}
 
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
+	}
 }

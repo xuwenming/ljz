@@ -75,6 +75,7 @@ public class LjzBalanceServiceImpl extends BaseServiceImpl<LjzBalance> implement
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzBalanceDao.save(t);
+		ljzBalance.setId(t.getId());
 	}
 
 	@Override

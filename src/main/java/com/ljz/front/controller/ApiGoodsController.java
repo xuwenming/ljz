@@ -110,7 +110,7 @@ public class ApiGoodsController extends BaseController {
             if(F.empty(id))
                 id = Integer.valueOf(Application.getString("SV100", "6"));
             LjzBalanceLog balanceLog = new LjzBalanceLog();
-            balanceLog.setRefId(id);
+            balanceLog.setRefId(id); // 转发赚取存储商品id
             balanceLog.setRefType("BBT005"); // 转发赚取
             List<LjzBalanceLog> list = ljzBalanceLogService.query(balanceLog);
             if(CollectionUtils.isNotEmpty(list)) {

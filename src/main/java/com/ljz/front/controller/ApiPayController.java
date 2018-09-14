@@ -1,24 +1,20 @@
 package com.ljz.front.controller;
 
-import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
 import com.mobian.exception.ServiceException;
 import com.mobian.listener.Application;
-import com.mobian.pageModel.*;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.LjzPayment;
+import com.mobian.pageModel.LjzUser;
+import com.mobian.pageModel.SessionInfo;
 import com.mobian.service.LjzPaymentServiceI;
 import com.mobian.service.LjzUserServiceI;
-import com.mobian.service.impl.RedisUserServiceImpl;
-import com.mobian.thirdpart.alipay.AlipayUtil;
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
 import com.mobian.util.IpUtil;
-import com.mobian.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,6 +92,16 @@ public class ApiPayController extends BaseController {
 	}
 
 	@RequestMapping("/wxpay/notify")
+	public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//订单状态的修改。根据实际业务逻辑执行
+		LjzPayment payment = new LjzPayment();
+		payment.setOrderId(100004);
+		payment.setRefId("1111");
+		payment.setStatus(true);
+		ljzPaymentService.addOrUpdate(payment);
+	}
+
+	@RequestMapping("/wxpay/notify1")
 	public synchronized void wxpay_notify(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		InputStream inStream = request.getInputStream();
 		ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
@@ -132,66 +138,28 @@ public class ApiPayController extends BaseController {
 			if("SUCCESS".equals(packageParams.get("result_code"))){
 				// 这里是支付成功
 				//////////执行自己的业务逻辑////////////////
-				String mch_id = (String)packageParams.get("mch_id"); //商户号
+//				String mch_id = (String)packageParams.get("mch_id"); //商户号
 //				String openid = (String)packageParams.get("openid");  //用户标识
 				String out_trade_no = (String)packageParams.get("out_trade_no"); //商户订单号
-				String total_fee = (String)packageParams.get("total_fee");
+//				String total_fee = (String)packageParams.get("total_fee");
 				String transaction_id = (String)packageParams.get("transaction_id"); //微信支付订单
 
                 if(out_trade_no.startsWith("OD")) {
-//                    MbPayment payment = new MbPayment();
-//                    payment.setOrderId(Integer.valueOf(orderNo.substring(2)));
-//                    payment.setRefId(transaction_id);
-//                    if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
-//                        payment.setStatus(true);
-//                    } else {
-//                        payment.setReason(map.get("return_msg").toString());
-//                        payment.setStatus(false);
-//                    }
-//                    mbPaymentService.addOrUpdate(payment);
-                }
 
-//				FdPaymentBase trade = null;
-//				if(out_trade_no.startsWith("Y") || out_trade_no.startsWith("Z")) {
-//					trade = fdPaymentBaseService.getByOrderNo(out_trade_no);
-//				} else if(out_trade_no.startsWith("Q")){
-//					FdBalanceLog bl = fdBalanceLogService.getByBalanceNo(out_trade_no);
-//					if(bl != null) {
-//						trade = new FdPaymentBase();
-//						trade.setStatus(bl.getStatus() ? "0" : "2");
-//						trade.setPrice(new BigDecimal(bl.getAmount().toString()).multiply(new BigDecimal(100)).intValue());
-//					}
-//				}
-//
-//				if(!Application.getString(WeixinUtil.MCH_ID).equals(mch_id)
-//						|| trade == null || new BigDecimal(total_fee).compareTo(new BigDecimal(trade.getPrice())) != 0) {
-//					logger.info("支付失败,错误信息：" + "参数错误");
-//					resXml = PayCommonUtil.setXML("FAIL", "参数错误");
-//				}else{
-//					if(!"2".equals(trade.getStatus())){
-//						//订单状态的修改。根据实际业务逻辑执行
-//						if(out_trade_no.startsWith("Y") || out_trade_no.startsWith("Z")) {
-//							FdPaymentBase payment = new FdPaymentBase();
-//							payment.setOrderNo(out_trade_no);
-//							payment.setRefId(transaction_id);
-//							payment.setStatus("2");
-//
-//							fdPaymentBaseService.addOrUpdate(payment);
-//						} else if(out_trade_no.startsWith("Q")) {
-//							FdBalanceLog balanceLog = new FdBalanceLog();
-//							balanceLog.setBalanceNo(out_trade_no);
-//							balanceLog.setRefId(transaction_id);
-//							balanceLog.setStatus(false);
-//
-//							fdBalanceLogService.updateLogAndBalance(balanceLog);
-//						}
-//
-//						resXml = PayCommonUtil.setXML("SUCCESS", "OK");
-//					}else{
-//						resXml = PayCommonUtil.setXML("SUCCESS", "OK");
-//						logger.info("订单已处理");
-//					}
-//				}
+					//订单状态的修改。根据实际业务逻辑执行
+					LjzPayment payment = new LjzPayment();
+					payment.setOrderId(Integer.valueOf(out_trade_no.substring(2)));
+					payment.setRefId(transaction_id);
+					payment.setStatus(true);
+
+					ljzPaymentService.addOrUpdate(payment);
+
+					resXml = PayCommonUtil.setXML("SUCCESS", "OK");
+
+                } else {
+					logger.info("商户订单号错误：" + out_trade_no);
+					resXml = PayCommonUtil.setXML("FAIL", "商户订单号错误");
+				}
 
 			} else {
 				logger.info("支付失败,错误信息：" + packageParams.get("err_code"));

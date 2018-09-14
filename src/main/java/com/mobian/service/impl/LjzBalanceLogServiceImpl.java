@@ -96,12 +96,20 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 
 	@Override
 	public void addLogAndUpdateBalance(LjzBalanceLog mbBalanceLog) {
+		addLogAndUpdateBalance(mbBalanceLog, 2);
+	}
+
+	@Override
+	public void addLogAndUpdateBalance(LjzBalanceLog mbBalanceLog, Integer refType) {
 		if (mbBalanceLog.getAmount() == null) {
 			throw new ServiceException("余额不允许为null");
 		}
-		LjzBalance balance = ljzBalanceService.addOrGetBalance(mbBalanceLog.getUserId());
-		BigDecimal amount = ljzBalanceDao.getAmountById(balance.getId());
-		mbBalanceLog.setBalanceId(balance.getId());
+		if(F.empty(mbBalanceLog.getBalanceId())) {
+			LjzBalance balance = ljzBalanceService.addOrGetBalance(mbBalanceLog.getUserId(), refType, BigDecimal.ZERO);
+			mbBalanceLog.setBalanceId(balance.getId());
+		}
+
+		BigDecimal amount = ljzBalanceDao.getAmountById(mbBalanceLog.getBalanceId());
 		mbBalanceLog.setBalanceAmount(amount.add(mbBalanceLog.getAmount()));
 		add(mbBalanceLog);
 

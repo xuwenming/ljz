@@ -51,4 +51,5 @@ public interface LjzPaymentItemServiceI {
 	 */
 	public void delete(Integer id);
 
+    LjzPaymentItem getByPaymentId(Integer paymentId);
 }

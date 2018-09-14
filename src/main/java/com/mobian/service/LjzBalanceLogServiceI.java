@@ -56,4 +56,6 @@ public interface LjzBalanceLogServiceI {
     List<LjzBalanceLog> query(LjzBalanceLog balanceLog);
 
     void addLogAndUpdateBalance(LjzBalanceLog balanceLog);
+
+    void addLogAndUpdateBalance(LjzBalanceLog balanceLog, Integer refType);
 }
