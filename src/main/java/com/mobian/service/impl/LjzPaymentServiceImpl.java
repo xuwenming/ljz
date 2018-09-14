@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implements LjzPaymentServiceI {
@@ -162,8 +159,14 @@ public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implement
 		}
 
 		if(transformFlag) {
-			// 1、添加店铺订单收入
 			LjzOrder order = ljzOrderService.get(payment.getOrderId());
+			// 1、修改订单状态
+			order.setStatus("OD10"); // 支付成功
+			order.setPayStatus("PS02");
+			order.setPayTime(new Date());
+			ljzOrderService.edit(order);
+
+			// 2、添加店铺订单收入
 			LjzBalance shopBalance = ljzBalanceService.addOrGetBalance(order.getShopId(), 1, BigDecimal.ZERO);
 			LjzBalanceLog balanceLog = new LjzBalanceLog();
 			balanceLog.setBalanceId(shopBalance.getId());
@@ -178,7 +181,7 @@ public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implement
 				for(LjzOrderItem orderItem : orderItems) {
 					LjzGoods goods = ljzGoodsService.get(orderItem.getGoodsId());
 					if(!F.empty(goods.getShareAmount()) && goods.getShareAmount().doubleValue() != 0) {
-						// 2、新增推荐人转发赚取
+						// 3、新增推荐人转发赚取
 						balanceLog = new LjzBalanceLog();
 						balanceLog.setUserId(order.getRecommend());
 						balanceLog.setRefType("BBT005"); // 转发赚取
@@ -187,7 +190,7 @@ public class LjzPaymentServiceImpl extends BaseServiceImpl<LjzPayment> implement
 						balanceLog.setAmount(goods.getShareAmount());
 						ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
 
-						// 3、扣除店铺转发赚取
+						// 4、扣除店铺转发赚取
 						balanceLog = new LjzBalanceLog();
 						balanceLog.setUserId(order.getShopId());
 						balanceLog.setRefType("BBT003"); // 转发赚取支出
