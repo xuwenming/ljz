@@ -91,17 +91,17 @@ public class ApiPayController extends BaseController {
 		return j;
 	}
 
-	@RequestMapping("/wxpay/notify")
-	public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		//订单状态的修改。根据实际业务逻辑执行
-		LjzPayment payment = new LjzPayment();
-		payment.setOrderId(100004);
-		payment.setRefId("1111");
-		payment.setStatus(true);
-		ljzPaymentService.addOrUpdate(payment);
-	}
+//	@RequestMapping("/wxpay/notify")
+//	public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		//订单状态的修改。根据实际业务逻辑执行
+//		LjzPayment payment = new LjzPayment();
+//		payment.setOrderId(100004);
+//		payment.setRefId("1111");
+//		payment.setStatus(true);
+//		ljzPaymentService.addOrUpdate(payment);
+//	}
 
-	@RequestMapping("/wxpay/notify1")
+	@RequestMapping("/wxpay/notify")
 	public synchronized void wxpay_notify(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		InputStream inStream = request.getInputStream();
 		ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
