@@ -9,4 +9,9 @@ public interface TaskServiceI {
      */
     void prizeTask();
 
+    /**
+     * 模拟转发赚钱任务
+     */
+    void shareTask();
+
 }
