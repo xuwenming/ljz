@@ -1,5 +1,6 @@
 package com.mobian.service;
 
+import com.mobian.pageModel.LjzGoods;
 import com.mobian.pageModel.LjzPrizeLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -54,4 +55,6 @@ public interface LjzPrizeLogServiceI {
 	public void delete(Integer id);
 
 	List<LjzPrizeLog> query(LjzPrizeLog prizeLog);
+
+    void addPrizeLogByGoods(LjzGoods goods);
 }

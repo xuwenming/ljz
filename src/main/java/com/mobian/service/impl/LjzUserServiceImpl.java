@@ -2,8 +2,10 @@ package com.mobian.service.impl;
 
 import com.mobian.absx.F;
 import com.mobian.dao.LjzUserDaoI;
+import com.mobian.model.TljzPrizeLog;
 import com.mobian.model.TljzUser;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.LjzPrizeLog;
 import com.mobian.pageModel.LjzUser;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.LjzUserServiceI;
@@ -130,6 +132,22 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 			return o;
 		}
 		return null;
+	}
+
+	@Override
+	public List<LjzUser> query(LjzUser ljzUser) {
+		List<LjzUser> ol = new ArrayList<>();
+		String hql = " from TljzUser t ";
+		@SuppressWarnings("unchecked")
+		List<TljzUser> l = query(hql, ljzUser, ljzUserDao);
+		if (l != null && l.size() > 0) {
+			for (TljzUser t : l) {
+				LjzUser o = new LjzUser();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

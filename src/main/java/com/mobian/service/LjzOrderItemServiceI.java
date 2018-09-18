@@ -54,4 +54,6 @@ public interface LjzOrderItemServiceI {
 	public void delete(Integer id);
 
     List<LjzOrderItem> queryByOrderId(Integer orderId);
+
+    List<LjzOrderItem> query(LjzOrderItem ljzOrderItem);
 }

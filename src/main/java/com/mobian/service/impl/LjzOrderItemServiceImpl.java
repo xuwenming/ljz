@@ -9,12 +9,10 @@ import java.util.UUID;
 
 import com.mobian.absx.F;
 import com.mobian.dao.LjzOrderItemDaoI;
+import com.mobian.model.TljzBalanceLog;
 import com.mobian.model.TljzOrderItem;
 import com.mobian.model.TljzWithdrawLog;
-import com.mobian.pageModel.LjzOrderItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.LjzWithdrawLog;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.LjzOrderItemServiceI;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -71,7 +69,7 @@ public class LjzOrderItemServiceImpl extends BaseServiceImpl<LjzOrderItem> imple
 			if (!F.empty(ljzOrderItem.getBuyPrice())) {
 				whereHql += " and t.buyPrice = :buyPrice";
 				params.put("buyPrice", ljzOrderItem.getBuyPrice());
-			}		
+			}
 		}	
 		return whereHql;
 	}
@@ -118,6 +116,22 @@ public class LjzOrderItemServiceImpl extends BaseServiceImpl<LjzOrderItem> imple
 		params.put("orderId", orderId);
 		List<TljzOrderItem> l = ljzOrderItemDao.find("from TljzOrderItem t  where t.orderId = :orderId", params);
 		if (CollectionUtils.isNotEmpty(l)) {
+			for (TljzOrderItem t : l) {
+				LjzOrderItem o = new LjzOrderItem();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
+	public List<LjzOrderItem> query(LjzOrderItem ljzOrderItem) {
+		List<LjzOrderItem> ol = new ArrayList<>();
+		String hql = " from TljzOrderItem t ";
+		@SuppressWarnings("unchecked")
+		List<TljzOrderItem> l = query(hql, ljzOrderItem, ljzOrderItemDao);
+		if (l != null && l.size() > 0) {
 			for (TljzOrderItem t : l) {
 				LjzOrderItem o = new LjzOrderItem();
 				BeanUtils.copyProperties(t, o);

@@ -5,13 +5,8 @@ package com.mobian.service;
  */
 public interface TaskServiceI {
     /**
-     * 剔除环信账号
+     * 消费中奖任务
      */
-    void deleteHxAccount();
-
-    /**
-     * 同步微信提现状态
-     */
-    void syncWxWithdrawStatus();
+    void prizeTask();
 
 }

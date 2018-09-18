@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,11 +11,9 @@ import java.util.UUID;
 import com.mobian.absx.F;
 import com.mobian.dao.LjzOrderDaoI;
 import com.mobian.exception.ServiceException;
+import com.mobian.model.TljzBalanceLog;
 import com.mobian.model.TljzOrder;
-import com.mobian.pageModel.LjzOrder;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.LjzOrderItem;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.LjzGoodsServiceI;
 import com.mobian.service.LjzOrderItemServiceI;
 import com.mobian.service.LjzOrderServiceI;
@@ -106,7 +105,11 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 			if (!F.empty(ljzOrder.getRecommend())) {
 				whereHql += " and t.recommend = :recommend";
 				params.put("recommend", ljzOrder.getRecommend());
-			}		
+			}
+			if(!F.empty(ljzOrder.getGoodsId())) {
+				whereHql += " and t.id in (select orderId from TljzOrderItem i where i.goodsId = :goodsId and DATEDIFF(i.addtime, NOW()) = -1)";
+				params.put("goodsId", ljzOrder.getGoodsId());
+			}
 		}	
 		return whereHql;
 	}
@@ -162,6 +165,32 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<LjzOrder> query(LjzOrder ljzOrder) {
+		List<LjzOrder> ol = new ArrayList<>();
+		String hql = " from TljzOrder t ";
+		@SuppressWarnings("unchecked")
+		List<TljzOrder> l = query(hql, ljzOrder, ljzOrderDao);
+		if (l != null && l.size() > 0) {
+			for (TljzOrder t : l) {
+				LjzOrder o = new LjzOrder();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
+	public int getBuyQuantityByUserId(Integer userId, Integer goodsId) {
+		String sql = "select sum(quantity) from ljz_order o " +
+				"JOIN ljz_order_item oi on oi.order_id = o.id " +
+				"where o.user_id = " + userId + " and o.`status` = 'OD02' " +
+				"and oi.goods_id = " + goodsId + " and DATEDIFF(o.addtime, NOW()) = -1";
+		BigInteger count = ljzOrderDao.countBySql(sql);
+		return count == null ? 0 : count.intValue();
 	}
 
 }

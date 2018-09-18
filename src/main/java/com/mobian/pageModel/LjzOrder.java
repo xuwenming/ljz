@@ -27,6 +27,8 @@ public class LjzOrder implements java.io.Serializable {
 	private java.lang.Integer recommend;	
 
 	private List<LjzOrderItem> orderItemList;
+	private Integer goodsId;
+	private Boolean isYestoday;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -149,5 +151,21 @@ public class LjzOrder implements java.io.Serializable {
 
 	public void setOrderItemList(List<LjzOrderItem> orderItemList) {
 		this.orderItemList = orderItemList;
+	}
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public Boolean getYestoday() {
+		return isYestoday;
+	}
+
+	public void setYestoday(Boolean yestoday) {
+		isYestoday = yestoday;
 	}
 }

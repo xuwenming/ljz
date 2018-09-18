@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -52,4 +54,8 @@ public interface LjzOrderServiceI {
 	public void delete(Integer id);
 
     void addOrder(LjzOrder order);
+
+    List<LjzOrder> query(LjzOrder ljzOrder);
+
+    int getBuyQuantityByUserId(Integer userId, Integer goodsId);
 }

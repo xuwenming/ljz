@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzUser;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -52,4 +54,6 @@ public interface LjzUserServiceI {
 	public void delete(Integer id);
 
 	LjzUser getByRef(String refId, String refType);
+
+    List<LjzUser> query(LjzUser ljzUser);
 }

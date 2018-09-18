@@ -9,7 +9,9 @@ import java.util.UUID;
 
 import com.mobian.absx.F;
 import com.mobian.dao.LjzGoodsDaoI;
+import com.mobian.model.TljzBalanceLog;
 import com.mobian.model.TljzGoods;
+import com.mobian.pageModel.LjzBalanceLog;
 import com.mobian.pageModel.LjzGoods;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -147,6 +149,22 @@ public class LjzGoodsServiceImpl extends BaseServiceImpl<LjzGoods> implements Lj
 	@Override
 	public int reduceGoodsCount(Integer goodsId, Integer quantity) {
 		return ljzGoodsDao.executeHql("update TljzGoods t set t.quantity = t.quantity-" + quantity + " where t.id = " + goodsId + " and t.quantity >= " + quantity + " for update");
+	}
+
+	@Override
+	public List<LjzGoods> query(LjzGoods ljzGoods) {
+		List<LjzGoods> ol = new ArrayList<>();
+		String hql = " from TljzGoods t ";
+		@SuppressWarnings("unchecked")
+		List<TljzGoods> l = query(hql, ljzGoods, ljzGoodsDao);
+		if (l != null && l.size() > 0) {
+			for (TljzGoods t : l) {
+				LjzGoods o = new LjzGoods();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

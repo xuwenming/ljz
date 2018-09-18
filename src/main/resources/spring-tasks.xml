@@ -5,9 +5,8 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-	<!--<task:scheduled-tasks>-->
-		<!--<task:scheduled ref="taskServiceImpl" method="deleteHxAccount"  cron="0/5 * * * * ? " />-->
-		<!--<task:scheduled ref="taskServiceImpl" method="syncWxWithdrawStatus"  cron="0 */5 * * * ? " />-->
-	<!--</task:scheduled-tasks>-->
+	<task:scheduled-tasks>
+		<task:scheduled ref="taskServiceImpl" method="prizeTask"  cron="0 0 1 * * ?" />
+	</task:scheduled-tasks>
 
 </beans>

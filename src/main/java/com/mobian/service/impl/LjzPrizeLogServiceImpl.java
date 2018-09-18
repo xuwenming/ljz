@@ -1,20 +1,19 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
 
 import com.mobian.absx.F;
 import com.mobian.dao.LjzPrizeLogDaoI;
+import com.mobian.listener.Application;
 import com.mobian.model.TljzPrizeLog;
-import com.mobian.pageModel.LjzPrizeLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
+import com.mobian.service.LjzBalanceLogServiceI;
+import com.mobian.service.LjzOrderServiceI;
 import com.mobian.service.LjzPrizeLogServiceI;
 
+import com.mobian.service.LjzUserServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,15 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 
 	@Autowired
 	private LjzPrizeLogDaoI ljzPrizeLogDao;
+
+	@Autowired
+	private LjzOrderServiceI ljzOrderService;
+
+	@Autowired
+	private LjzUserServiceI ljzUserService;
+
+	@Autowired
+	private LjzBalanceLogServiceI ljzBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(LjzPrizeLog ljzPrizeLog, PageHelper ph) {
@@ -83,6 +91,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		ljzPrizeLogDao.save(t);
+		ljzPrizeLog.setId(t.getId());
 	}
 
 	@Override
@@ -125,6 +134,89 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public void addPrizeLogByGoods(LjzGoods goods) {
+		List<Integer> userIds = new ArrayList<>();
+		Integer prizeNumber = goods.getPrizeNumber();
+		if(F.empty(prizeNumber)) {
+			prizeNumber = Integer.valueOf(Application.getString("SV200", "2"));
+		}
+		// 获取商品昨日已支付订单
+		LjzOrder ljzOrder = new LjzOrder();
+		ljzOrder.setStatus("OD02");
+		ljzOrder.setGoodsId(goods.getId());
+		List<LjzOrder> orders = ljzOrderService.query(ljzOrder);
+		BigDecimal saleTotalAmount = BigDecimal.ZERO;
+		if(CollectionUtils.isNotEmpty(orders)) {
+			for(LjzOrder order : orders) {
+				saleTotalAmount = saleTotalAmount.add(order.getTotalPrice());
+			}
+		} else {
+			saleTotalAmount = new BigDecimal(Application.getString("SV201", "100"));
+		}
+
+		BigDecimal prizeAmount = saleTotalAmount.divide(BigDecimal.valueOf(prizeNumber), 0, BigDecimal.ROUND_HALF_UP);
+
+		Random random = new Random();
+		if(CollectionUtils.isNotEmpty(orders)) {
+			for(int i=0; i<prizeNumber; i++) {
+				LjzOrder order = orders.get(random.nextInt(orders.size()));
+				Integer userId = order.getUserId();
+				if(!userIds.contains(userId)) { // 真实用户中奖
+					userIds.add(userId);
+
+					// 获取用户中奖购买商品数量
+					int quantit = ljzOrderService.getBuyQuantityByUserId(userId, goods.getId());
+					// 新增消费中奖记录
+					LjzPrizeLog prizeLog = new LjzPrizeLog();
+					prizeLog.setUserId(userId);
+					prizeLog.setGoodsId(goods.getId());
+					prizeLog.setAmount(prizeAmount);
+					prizeLog.setQuantity(quantit);
+					add(prizeLog);
+
+					// 新增用户消费中奖
+					LjzBalanceLog balanceLog = new LjzBalanceLog();
+					balanceLog.setUserId(userId);
+					balanceLog.setRefType("BBT004"); // 消费中奖
+					balanceLog.setRefId(prizeLog.getId());
+					balanceLog.setAmount(prizeAmount);
+					ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
+
+					// 4、扣除店铺消费中奖
+					balanceLog = new LjzBalanceLog();
+					balanceLog.setUserId(order.getShopId());
+					balanceLog.setRefType("BBT002"); // 消费中奖支出
+					balanceLog.setRefId(prizeLog.getId());
+					balanceLog.setAmount(prizeAmount.multiply(BigDecimal.valueOf(-1)));
+					ljzBalanceLogService.addLogAndUpdateBalance(balanceLog, 1);
+				}
+
+			}
+		}
+		int size = userIds.size();
+		if(size < prizeNumber) { // 模拟用户中奖
+			// 查询所有模拟用户
+			LjzUser ljzUser = new LjzUser();
+			ljzUser.setRefType("ag"); // 模拟用户
+			List<LjzUser> analogUsers = ljzUserService.query(ljzUser);
+			if(CollectionUtils.isNotEmpty(analogUsers)) {
+				for(int i=0; i<prizeNumber-size; i++) {
+					Integer userId = analogUsers.get(random.nextInt(analogUsers.size())).getId();
+					if(!userIds.contains(userId)) {
+						// 新增消费中奖记录
+						LjzPrizeLog prizeLog = new LjzPrizeLog();
+						prizeLog.setUserId(userId);
+						prizeLog.setGoodsId(goods.getId());
+						prizeLog.setAmount(prizeAmount);
+						prizeLog.setQuantity(1);
+						add(prizeLog);
+					}
+				}
+			}
+		}
 	}
 
 }

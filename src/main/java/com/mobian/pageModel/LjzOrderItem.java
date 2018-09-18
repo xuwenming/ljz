@@ -18,7 +18,7 @@ public class LjzOrderItem implements java.io.Serializable {
 	private BigDecimal buyPrice;
 
 	private String goodsTitle;
-	
+
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;

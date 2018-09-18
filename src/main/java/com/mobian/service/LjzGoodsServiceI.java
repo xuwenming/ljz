@@ -4,6 +4,8 @@ import com.mobian.pageModel.LjzGoods;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -52,4 +54,6 @@ public interface LjzGoodsServiceI {
 	public void delete(Integer id);
 
     int reduceGoodsCount(Integer goodsId, Integer quantity);
+
+    List<LjzGoods> query(LjzGoods ljzGoods);
 }
