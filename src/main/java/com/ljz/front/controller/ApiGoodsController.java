@@ -104,15 +104,27 @@ public class ApiGoodsController extends BaseController {
      */
     @RequestMapping("/sharelog/list")
     @ResponseBody
-    public Json shareLogList(Integer id){
+    public Json shareLogList(Integer id, PageHelper ph){
         Json j = new Json();
         try {
             if(F.empty(id))
                 id = Integer.valueOf(Application.getString("SV100", "6"));
+
+            if(ph.getRows() == 0 || ph.getRows() > 50) {
+                ph.setRows(10);
+            }
+            if(F.empty(ph.getSort())) {
+                ph.setSort("addtime");
+            }
+            if(F.empty(ph.getOrder())) {
+                ph.setOrder("desc");
+            }
+
             LjzBalanceLog balanceLog = new LjzBalanceLog();
             balanceLog.setRefId(id); // 转发赚取存储商品id
             balanceLog.setRefType("BBT005"); // 转发赚取
-            List<LjzBalanceLog> list = ljzBalanceLogService.query(balanceLog);
+            DataGrid dg = ljzBalanceLogService.dataGrid(balanceLog, ph);
+            List<LjzBalanceLog> list = dg.getRows();
             if(CollectionUtils.isNotEmpty(list)) {
                 CompletionService completionService = CompletionFactory.initCompletion();
                 for(LjzBalanceLog log : list) {
@@ -135,7 +147,7 @@ public class ApiGoodsController extends BaseController {
                 completionService.sync();
             }
             j.success();
-            j.setObj(list);
+            j.setObj(dg);
         } catch (Exception e) {
             logger.error("获取商品详情接口异常", e);
         }
