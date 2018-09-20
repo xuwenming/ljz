@@ -212,6 +212,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 						prizeLog.setGoodsId(goods.getId());
 						prizeLog.setAmount(prizeAmount);
 						prizeLog.setQuantity(1);
+						prizeLog.setRemark("模拟用户中奖");
 						add(prizeLog);
 					}
 				}

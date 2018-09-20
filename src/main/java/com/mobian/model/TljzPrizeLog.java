@@ -55,6 +55,7 @@ public class TljzPrizeLog implements java.io.Serializable,IEntity{
 	private BigDecimal amount;
 	//
 	private java.lang.Integer quantity;
+	private java.lang.String remark;
 	//columns END
 
 
@@ -140,7 +141,14 @@ public class TljzPrizeLog implements java.io.Serializable,IEntity{
 	public void setQuantity(java.lang.Integer quantity) {
 		this.quantity = quantity;
 	}
-	
+	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public java.lang.String getRemark() {
+		return this.remark;
+	}
+
+	public void setRemark(java.lang.String remark) {
+		this.remark = remark;
+	}
 	
 	/*
 	public String toString() {

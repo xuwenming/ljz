@@ -55,6 +55,7 @@ public class TljzPayment implements java.io.Serializable,IEntity{
 	private java.lang.String payWay;
 	//
 	private java.lang.Boolean status;
+	private String prepayId;
 	//columns END
 
 
@@ -140,8 +141,16 @@ public class TljzPayment implements java.io.Serializable,IEntity{
 	public void setStatus(java.lang.Boolean status) {
 		this.status = status;
 	}
-	
-	
+
+	@Column(name = "prepay_id", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public String getPrepayId() {
+		return prepayId;
+	}
+
+	public void setPrepayId(String prepayId) {
+		this.prepayId = prepayId;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

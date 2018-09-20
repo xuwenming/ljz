@@ -15,7 +15,8 @@ public class LjzPayment implements java.io.Serializable {
 	private java.lang.Integer orderId;	
 	private BigDecimal amount;
 	private java.lang.String payWay;	
-	private java.lang.Boolean status;	
+	private java.lang.Boolean status;
+	private String prepayId;
 
 	private String refId;
 	
@@ -85,5 +86,13 @@ public class LjzPayment implements java.io.Serializable {
 
 	public void setRefId(String refId) {
 		this.refId = refId;
+	}
+
+	public String getPrepayId() {
+		return prepayId;
+	}
+
+	public void setPrepayId(String prepayId) {
+		this.prepayId = prepayId;
 	}
 }

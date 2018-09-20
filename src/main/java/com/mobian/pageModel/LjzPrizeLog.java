@@ -15,7 +15,8 @@ public class LjzPrizeLog implements java.io.Serializable {
 	private java.lang.Integer userId;	
 	private java.lang.Integer goodsId;	
 	private BigDecimal amount;
-	private java.lang.Integer quantity;	
+	private java.lang.Integer quantity;
+	private java.lang.String remark;
 
 	private Boolean isToday;
 	private LjzUser user;
@@ -93,5 +94,13 @@ public class LjzPrizeLog implements java.io.Serializable {
 
 	public void setUser(LjzUser user) {
 		this.user = user;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

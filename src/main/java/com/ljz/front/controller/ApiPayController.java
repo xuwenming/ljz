@@ -73,6 +73,9 @@ public class ApiPayController extends BaseController {
 			System.out.println("~~~~~~~~~~~~微信支付接口返回结果result:" + result);
 			Map<String, String> resultMap = XMLUtil.doXMLParse(result);
 			if(resultMap.get("return_code").toString().equalsIgnoreCase("SUCCESS") && resultMap.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+				String prepayId = resultMap.get("prepay_id");
+				payment.setPrepayId(prepayId);
+				ljzPaymentService.edit(payment);
 				j.setObj(returnJsonStr(resultMap, request));
 				j.setSuccess(true);
 				j.setMsg("微信统一下单成功！");
