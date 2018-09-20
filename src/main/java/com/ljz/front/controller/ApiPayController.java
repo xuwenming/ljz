@@ -117,8 +117,8 @@ public class ApiPayController extends BaseController {
 		outSteam.close();
 		inStream.close();
 		String result  = new String(outSteam.toByteArray(),"utf-8");//获取微信调用我们notify_url的返回信息
-		Map<Object, Object> map = XMLUtil.doXMLParse(result);
-		for(Object keyValue : map.keySet()){
+		Map<String, String> map = XMLUtil.xmlToMap(result);
+		for(String keyValue : map.keySet()){
 			System.out.println(keyValue+"="+map.get(keyValue));
 		}
 
@@ -127,7 +127,7 @@ public class ApiPayController extends BaseController {
 		Iterator it = map.keySet().iterator();
 		while (it.hasNext()) {
 			String parameter = (String) it.next();
-			String parameterValue = (String)map.get(parameter);
+			String parameterValue = map.get(parameter);
 
 			String v = "";
 			if(null != parameterValue) {

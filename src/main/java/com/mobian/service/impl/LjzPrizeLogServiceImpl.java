@@ -153,7 +153,9 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 			for(LjzOrder order : orders) {
 				saleTotalAmount = saleTotalAmount.add(order.getTotalPrice());
 			}
-		} else {
+		}
+
+		if(saleTotalAmount.doubleValue() < 5) {
 			saleTotalAmount = new BigDecimal(Application.getString("SV201", "100"));
 		}
 
