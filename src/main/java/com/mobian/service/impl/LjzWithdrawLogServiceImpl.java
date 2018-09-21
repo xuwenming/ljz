@@ -233,7 +233,7 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 				//3. 扣款
 				String requestXml = PayCommonUtil.requestTransfersXML(params);
 				System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
-				String result = HttpUtil.httpsRequestSSL(WeixinUtil.PAY_BANK_URL, requestXml);
+				String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
 				System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
 
 				Map<String, String> resultMap = XMLUtil.doXMLParse(result);
