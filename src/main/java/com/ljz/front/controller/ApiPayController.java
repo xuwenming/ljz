@@ -55,6 +55,7 @@ public class ApiPayController extends BaseController {
 
             LjzPayment ljzPayment = ljzPaymentService.getByOrderId(payment.getOrderId());
             if(ljzPayment != null) {
+				payment.setId(ljzPayment.getId());
                 if(ljzPayment.getStatus()) {
                     j.setMsg("订单已支付！");
                     return j;
