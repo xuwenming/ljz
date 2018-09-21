@@ -131,20 +131,24 @@ public class PayCommonUtil {
 			SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
 			// 金额  必填（单位为分必须为整数）
 			parameters.put("amount", (int)(params.get("amount")) + "");
+			// 校验用户姓名选项 NO_CHECK：不校验真实姓名 FORCE_CHECK：强校验真实姓名 OPTION_CHECK：针对已实名认证的用户才校验真实姓名
+			parameters.put("check_name", "OPTION_CHECK");
 			// 企业付款描述信息
-			parameters.put("desc", "医家盟提现");
+			parameters.put("desc", "吕家传提现");
+			// 公众账号ID 必填
+			parameters.put("mch_appid", Application.getString(WeixinUtil.APPID));
 			// 商户号 必填
-			parameters.put("mch_id", Application.getString(WeixinUtil.MCH_ID));
+			parameters.put("mchid", Application.getString(WeixinUtil.MCH_ID));
 			// 随机字符串  必填 不长于32位
 			parameters.put("nonce_str", WeixinUtil.CreateNoncestr());
+			// 用户openid，此参数必传
+			parameters.put("openid", params.get("openid").toString());
 			// 商户订单号  必填
 			parameters.put("partner_trade_no", params.get("partner_trade_no").toString());
-			// 收款方银行卡号
-			parameters.put("enc_bank_no", getRSA(params.get("enc_bank_no").toString()));
-			// 收款方用户名
-			parameters.put("enc_true_name", getRSA(params.get("enc_true_name").toString()));
-			// 收款方开户行
-			parameters.put("bank_code", params.get("bank_code").toString());
+			// 收款用户姓名
+			parameters.put("re_user_name", params.get("re_user_name").toString());
+			// 调用接口的机器Ip地址
+			parameters.put("spbill_create_ip", params.get("spbill_create_ip").toString());
 
 			// 签名 必填
 			String sign = PayCommonUtil.createSign("UTF-8", parameters);

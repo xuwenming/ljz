@@ -6,28 +6,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>LjzWithdrawLog管理</title>
+<title>FdWithdrawLog管理</title>
 <jsp:include page="../inc.jsp"></jsp:include>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzWithdrawLogController/editPage')}">
+<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/editPage')}">
 	<script type="text/javascript">
 		$.canEdit = true;
 	</script>
 </c:if>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzWithdrawLogController/delete')}">
+<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/delete')}">
 	<script type="text/javascript">
 		$.canDelete = true;
 	</script>
 </c:if>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzWithdrawLogController/view')}">
+<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/view')}">
 	<script type="text/javascript">
 		$.canView = true;
 	</script>
 </c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/editAudit')}">
+	<script type="text/javascript">
+		$.canEditAudit = true;
+	</script>
+</c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/viewStatus')}">
+		<script type="text/javascript">
+			$.canViewStatus = true;
+		</script>
+	</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/ljzWithdrawLogController/dataGrid',
+			url : '${pageContext.request.contextPath}/fdWithdrawLogController/dataGrid',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -39,7 +49,7 @@
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
-			nowrap : false,
+			nowrap : true,
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
@@ -49,85 +59,79 @@
 				width : 150,
 				hidden : true
 				}, {
-				field : 'addtime',
-				title : '<%=TljzWithdrawLog.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'updatetime',
-				title : '<%=TljzWithdrawLog.ALIAS_UPDATETIME%>',
-				width : 50		
-				}, {
-				field : 'isdeleted',
-				title : '<%=TljzWithdrawLog.ALIAS_ISDELETED%>',
-				width : 50		
-				}, {
 				field : 'withdrawNo',
-				title : '<%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%>',
-				width : 50		
+				title : '提现单号',
+				width : 60,
+				formatter : function (value, row, index) {
+					if ($.canView) {
+						return '<a onclick="viewFun(\'' + row.id + '\')">'+value+'</a>';
+					}
+					return value
+				}
+				}, {
+				field : 'createTime',
+				title : '申请时间',
+				width : 60,
+				formatter : function (value, row, index) {
+					return new Date(value).format('yyyy-MM-dd HH:mm:ss');
+				}
+				}, {
+				field : 'userName',
+				title : '申请人姓名',
+				width : 40
+				}, {
+				field : 'userMobile',
+				title : '申请人手机号',
+				width : 50
 				}, {
 				field : 'amount',
 				title : '<%=TljzWithdrawLog.ALIAS_AMOUNT%>',
-				width : 50		
+				width : 40,
+				align: "right",
+				formatter: function (value, row, index) {
+					if (value != null)
+						return $.formatMoney(value);
+					else
+						return '--';
+				}
 				}, {
-				field : 'serviceAmt',
-				title : '<%=TljzWithdrawLog.ALIAS_SERVICE_AMT%>',
-				width : 50		
-				}, {
-				field : 'userId',
-				title : '<%=TljzWithdrawLog.ALIAS_USER_ID%>',
-				width : 50		
-				}, {
-				field : 'content',
-				title : '<%=TljzWithdrawLog.ALIAS_CONTENT%>',
-				width : 50		
-				}, {
-				field : 'handleStatus',
+				field : 'handleStatusZh',
 				title : '<%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%>',
-				width : 50		
+				width : 40,
+				formatter: function (value, row, index) {
+					var str;
+					if(row.handleStatus == "HS01") str = value;
+					else if(row.handleStatus == "HS02") str = '<font style="color:#1AAFF0;">'+value+'</font>';
+					else if(row.handleStatus == "HS03")str =  '<font color="#f6383a;">'+value+'</font>';
+					else if(row.handleStatus == "HS04")str =  '<font color="#4cd964;">'+value+'</font>';
+					else str =  '<font color="#F00;">'+value+'</font>';
+
+					return str;
+				}
 				}, {
-				field : 'handleLoginId',
+				field : 'handleLoginName',
 				title : '<%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%>',
-				width : 50		
+				width : 40
 				}, {
-				field : 'handleRemark',
-				title : '<%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%>',
-				width : 50		
-				}, {
-				field : 'handleTime',
-				title : '<%=TljzWithdrawLog.ALIAS_HANDLE_TIME%>',
-				width : 50		
-				}, {
-				field : 'paymentNo',
-				title : '<%=TljzWithdrawLog.ALIAS_PAYMENT_NO%>',
-				width : 50		
-				}, {
-				field : 'cmmsAmt',
-				title : '<%=TljzWithdrawLog.ALIAS_CMMS_AMT%>',
-				width : 50		
-				}, {
-				field : 'refType',
+				field : 'refTypeZh',
 				title : '<%=TljzWithdrawLog.ALIAS_REF_TYPE%>',
-				width : 50		
-				}, {
-				field : 'applyLoginIp',
-				title : '<%=TljzWithdrawLog.ALIAS_APPLY_LOGIN_IP%>',
-				width : 50		
+				width : 50,
+				formatter: function (value, row, index) {
+					if(row.refType == 'BBT007') return '提现-患者端';
+					else return '提现-医生端';
+				}
 			}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 50,
 				formatter : function(value, row, index) {
 					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
+					if ($.canViewStatus && row.handleStatus == 'HS02') {
+						str += '<a onclick="viewStatus(\'' + row.withdrawNo + '\')">查看状态</a>';
 					}
 					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
+					if ($.canEditAudit && row.handleStatus == 'HS01'){
+						str += '<a onclick="editAuditFun(\'' + row.id + '\',\'' + row.auditType + '\')">审核</a>';
 					}
 					return str;
 				}
@@ -142,6 +146,74 @@
 		});
 	});
 
+
+	function editAuditFun(id) {
+		if (id == undefined) {
+			var rows = dataGrid.datagrid('getSelections');
+			id = rows[0].id;
+		}
+		parent.$.modalDialog({
+			title: '提现审核',
+			width: 780,
+			height: 200,
+			href: '${pageContext.request.contextPath}/fdWithdrawLogController/editAuditPage?id=' + id ,
+			buttons: [{
+				text: '同意',
+				handler: function () {
+					var f = parent.$.modalDialog.handler.find('#form');
+					var $handleStatus = f.find("input[name=handleStatus]");
+					if($handleStatus.val() == 'HS02') {
+						parent.$.messager.alert('提示', '提现已审核通过，请勿重复操作', 'info');
+						return;
+					}
+					parent.$.messager.confirm('询问', '同意提现，是否继续？', function(b) {
+						if (b) {
+							parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+							$handleStatus.val("HS02");
+							f.submit();
+						}
+					});
+				}
+			},
+				{
+					text: '拒绝',
+					handler: function () {
+						parent.$.messager.confirm('询问', '拒绝提现余额退回，是否继续？', function(b) {
+							if (b) {
+								parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+								var f = parent.$.modalDialog.handler.find('#form');
+								f.find("input[name=handleStatus]").val("HS03");
+								f.submit();
+							}
+						});
+					}
+				}
+			]
+		});
+	}
+
+	function viewStatus(withdrawNo) {
+		$.post('${pageContext.request.contextPath}/fdWithdrawLogController/viewStatus', {
+			withdrawNo : withdrawNo
+		}, function(result) {
+			if (result.success) {
+				if(result.obj) {
+					if(result.obj.status == 'PROCESSING') {
+						parent.$.messager.alert('提示', '提现正在处理中...', 'info');
+					} else if(result.obj.status == 'SUCCESS') {
+						parent.$.messager.alert('提示', '提现已处理成功', 'info');
+					} else {
+						parent.$.messager.alert('提示', '1、提现失败<br>2、原因：' + result.obj.reason + '<br><br>请及时将该提现审核拒绝！', 'error');
+					}
+
+				} else {
+					parent.$.messager.alert('提示', '接口异常', 'error');
+				}
+
+			}
+		}, 'JSON');
+	}
+
 	function deleteFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
@@ -153,7 +225,7 @@
 					title : '提示',
 					text : '数据处理中，请稍后....'
 				});
-				$.post('${pageContext.request.contextPath}/ljzWithdrawLogController/delete', {
+				$.post('${pageContext.request.contextPath}/fdWithdrawLogController/delete', {
 					id : id
 				}, function(result) {
 					if (result.success) {
@@ -175,7 +247,7 @@
 			title : '编辑数据',
 			width : 780,
 			height : 500,
-			href : '${pageContext.request.contextPath}/ljzWithdrawLogController/editPage?id=' + id,
+			href : '${pageContext.request.contextPath}/fdWithdrawLogController/editPage?id=' + id,
 			buttons : [ {
 				text : '编辑',
 				handler : function() {
@@ -196,7 +268,7 @@
 			title : '查看数据',
 			width : 780,
 			height : 500,
-			href : '${pageContext.request.contextPath}/ljzWithdrawLogController/view?id=' + id
+			href : '${pageContext.request.contextPath}/fdWithdrawLogController/view?id=' + id
 		});
 	}
 
@@ -205,7 +277,7 @@
 			title : '添加数据',
 			width : 780,
 			height : 500,
-			href : '${pageContext.request.contextPath}/ljzWithdrawLogController/addPage',
+			href : '${pageContext.request.contextPath}/fdWithdrawLogController/addPage',
 			buttons : [ {
 				text : '添加',
 				handler : function() {
@@ -223,7 +295,7 @@
 		$.merge($colums, options.frozenColumns);
 		var columsStr = JSON.stringify($colums);
 	    $('#downloadTable').form('submit', {
-	        url:'${pageContext.request.contextPath}/ljzWithdrawLogController/download',
+	        url:'${pageContext.request.contextPath}/fdWithdrawLogController/download',
 	        onSubmit: function(param){
 	        	$.extend(param, $.serializeObject($('#searchForm')));
 	        	param.downloadFields = columsStr;
@@ -244,84 +316,33 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 70px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th><%=TljzWithdrawLog.ALIAS_ADDTIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_UPDATETIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_ISDELETED%></th>	
-							<td>
-											<input type="text" name="isdeleted" maxlength="0" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>	
-							<td>
-											<input type="text" name="withdrawNo" maxlength="64" class="span2"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>	
-							<td>
-											<input type="text" name="amount" maxlength="19" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_SERVICE_AMT%></th>	
-							<td>
-											<input type="text" name="serviceAmt" maxlength="19" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_USER_ID%></th>	
-							<td>
-											<input type="text" name="userId" maxlength="36" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_CONTENT%></th>	
-							<td>
-											<input type="text" name="content" maxlength="512" class="span2"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
-							<td>
-											<jb:select dataType="HS" name="handleStatus"></jb:select>	
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
-							<td>
-											<input type="text" name="handleLoginId" maxlength="36" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
-							<td>
-											<input type="text" name="handleRemark" maxlength="512" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_HANDLE_TIME%>'})" id="handleTimeBegin" name="handleTimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_HANDLE_TIME%>'})" id="handleTimeEnd" name="handleTimeEnd"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzWithdrawLog.ALIAS_PAYMENT_NO%></th>	
-							<td>
-											<input type="text" name="paymentNo" maxlength="64" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_CMMS_AMT%></th>	
-							<td>
-											<input type="text" name="cmmsAmt" maxlength="19" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_REF_TYPE%></th>	
-							<td>
-											<input type="text" name="refType" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TljzWithdrawLog.ALIAS_APPLY_LOGIN_IP%></th>	
-							<td>
-											<input type="text" name="applyLoginIp" maxlength="64" class="span2"/>
-							</td>
-						</tr>	
+					<tr>
+						<th>提现单号</th>
+						<td>
+							<input type="text" name="withdrawNo" maxlength="50" class="span2"/>
+						</td>
+						<th>提现申请人</th>
+						<td>
+							<jb:selectGrid dataType="userId" name="userId"></jb:selectGrid>
+						</td>
+						<th>处理状态</th>
+						<td>
+							<jb:select dataType="HS" name="handleStatus"></jb:select>
+						</td>
+						<th>申请时间</th>
+						<td colspan="3"><input class="span2" name="createTimeStartDate"
+											   placeholder="点击选择时间"
+											   onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+											   readonly="readonly" />至<input class="span2"
+																			 name="createTimeEndDate" placeholder="点击选择时间"
+																			 onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+																			 readonly="readonly" /></td>
+
+					</tr>
+
 				</table>
 			</form>
 		</div>
@@ -330,11 +351,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzWithdrawLogController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/addPage')}">
+			<%--<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>--%>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzWithdrawLogController/download')}">
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/fdWithdrawLogController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>

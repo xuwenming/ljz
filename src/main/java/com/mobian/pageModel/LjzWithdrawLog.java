@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.listener.Application;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -28,7 +30,17 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	private String refType;
 	private String applyLoginIp;
 
-	
+	private Date addtimeStart;
+	private Date addtimeEnd;
+	private String handleLoginName;
+
+	public String getHandleStatusZh() {
+		return Application.getString(handleStatus);
+	}
+
+	public String getRefTypeZh() {
+		return Application.getString(refType);
+	}
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -166,4 +178,27 @@ public class LjzWithdrawLog implements java.io.Serializable {
 		return this.applyLoginIp;
 	}
 
+	public Date getAddtimeStart() {
+		return addtimeStart;
+	}
+
+	public void setAddtimeStart(Date addtimeStart) {
+		this.addtimeStart = addtimeStart;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
+	}
+
+	public String getHandleLoginName() {
+		return handleLoginName;
+	}
+
+	public void setHandleLoginName(String handleLoginName) {
+		this.handleLoginName = handleLoginName;
+	}
 }

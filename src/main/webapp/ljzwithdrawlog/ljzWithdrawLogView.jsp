@@ -1,94 +1,90 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.mobian.model.TljzWithdrawLog" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script type="text/javascript">
 	$(function() {
-		parent.$.messager.progress('close');		
+		parent.$.messager.progress('close');
+		$('.amount').each(function(){
+			$(this).text($.formatMoney($.trim($(this).text())));
+		});
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false">
 		<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ADDTIME%></th>	
-					<td>
-						${ljzWithdrawLog.addtime}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_UPDATETIME%></th>	
-					<td>
-						${ljzWithdrawLog.updatetime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ISDELETED%></th>	
-					<td>
-						${ljzWithdrawLog.isdeleted}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>	
-					<td>
-						${ljzWithdrawLog.withdrawNo}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>	
-					<td>
-						${ljzWithdrawLog.amount}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_SERVICE_AMT%></th>	
-					<td>
-						${ljzWithdrawLog.serviceAmt}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_USER_ID%></th>	
-					<td>
-						${ljzWithdrawLog.userId}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_CONTENT%></th>	
-					<td>
-						${ljzWithdrawLog.content}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
-					<td>
-						${ljzWithdrawLog.handleStatus}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
-					<td>
-						${ljzWithdrawLog.handleLoginId}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
-					<td>
-						${ljzWithdrawLog.handleRemark}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
-					<td>
-						${ljzWithdrawLog.handleTime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_PAYMENT_NO%></th>	
-					<td>
-						${ljzWithdrawLog.paymentNo}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_CMMS_AMT%></th>	
-					<td>
-						${ljzWithdrawLog.cmmsAmt}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_REF_TYPE%></th>	
-					<td>
-						${ljzWithdrawLog.refType}							
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_APPLY_LOGIN_IP%></th>	
-					<td>
-						${ljzWithdrawLog.applyLoginIp}							
-					</td>							
-				</tr>		
+			<tr>
+				<th width="10%"><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>
+				<td width="40%">
+					${fdWithdrawLog.withdrawNo}
+				</td>
+				<th width="10%">申请时间</th>
+				<td>
+					${fdWithdrawLog.createTimeStr}
+				</td>
+			</tr>
+			<tr>
+				<th>申请人姓名</th>
+				<td>
+					${fdWithdrawLog.userName}
+				</td>
+				<th>手机号</th>
+				<td>
+					${fdWithdrawLog.userMobile}
+				</td>
+			</tr>
+			<tr>
+				<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>
+				<td class="amount">
+					${fdWithdrawLog.amount}
+				</td>
+				<th>提现手续费</th>
+				<td class="amount">
+					${fdWithdrawLog.serviceAmt}
+				</td>
+			</tr>
+			<tr>
+				<th>银行</th>
+				<td>
+					${fdWithdrawLog.bankCodeZh}
+				</td>
+				<th>开户行支行</th>
+				<td>
+					${fdWithdrawLog.bankName}
+				</td>
+			</tr>
+			<tr>
+				<th>银行卡号</th>
+				<td>
+					${fdWithdrawLog.bankCard}
+				</td>
+				<th>开户姓名</th>
+				<td>
+					${fdWithdrawLog.bankAccount}
+				</td>
+			</tr>
+			<tr>
+				<th>处理状态</th>
+				<td>
+					${fdWithdrawLog.handleStatusZh}
+				</td>
+				<th>处理人</th>
+				<td>
+					${fdWithdrawLog.handleLoginName}
+				</td>
+			</tr>
+			<tr>
+				<th>处理时间</th>
+				<td colspan="3">
+					<fmt:formatDate value="${fdWithdrawLog.handleTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				</td>
+			</tr>
+			<tr>
+				<th>处理结果</th>
+				<td colspan="3">
+					${fdWithdrawLog.handleRemark}
+				</td>
+			</tr>
 		</table>
 	</div>
 </div>

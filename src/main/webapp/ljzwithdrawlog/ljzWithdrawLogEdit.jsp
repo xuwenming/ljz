@@ -7,7 +7,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/ljzWithdrawLogController/edit',
+			url : '${pageContext.request.contextPath}/fdWithdrawLogController/edit',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -35,86 +35,96 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-				<input type="hidden" name="id" value = "${ljzWithdrawLog.id}"/>
+				<input type="hidden" name="id" value = "${fdWithdrawLog.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ADDTIME%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_CREATE_TIME%></th>	
 					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_ADDTIME%>'})"   maxlength="0" value="${ljzWithdrawLog.addtime}"/>
+											<input class="span2" name="createTime" type="text" value="${fdWithdrawLog.createTime}"/>
 					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_UPDATETIME%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_UPDATE_TIME%></th>	
 					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_UPDATETIME%>'})"   maxlength="0" value="${ljzWithdrawLog.updatetime}"/>
+											<input class="span2" name="updateTime" type="text" value="${fdWithdrawLog.updateTime}"/>
 					</td>							
 			</tr>	
 				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ISDELETED%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_STATUS%></th>	
 					<td>
-											<input class="span2" name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true" value="${ljzWithdrawLog.isdeleted}"/>
+											<input class="span2" name="status" type="text" value="${fdWithdrawLog.status}"/>
 					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>	
 					<td>
-											<input class="span2" name="withdrawNo" type="text" value="${ljzWithdrawLog.withdrawNo}"/>
+											<input class="span2" name="withdrawNo" type="text" value="${fdWithdrawLog.withdrawNo}"/>
 					</td>							
 			</tr>	
 				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>	
 					<td>
-											<input class="span2" name="amount" type="text" class="easyui-validatebox span2" data-options="required:true" value="${ljzWithdrawLog.amount}"/>
+											<input class="span2" name="amount" type="text" class="easyui-validatebox span2" data-options="required:true" value="${fdWithdrawLog.amount}"/>
 					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_SERVICE_AMT%></th>	
-					<td>
-											<input class="span2" name="serviceAmt" type="text" value="${ljzWithdrawLog.serviceAmt}"/>
-					</td>							
-			</tr>	
-				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_USER_ID%></th>	
 					<td>
-											<input class="span2" name="userId" type="text" value="${ljzWithdrawLog.userId}"/>
+											<input class="span2" name="userId" type="text" value="${fdWithdrawLog.userId}"/>
 					</td>							
+			</tr>	
+				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_CONTENT%></th>	
 					<td>
-											<input class="span2" name="content" type="text" value="${ljzWithdrawLog.content}"/>
+											<input class="span2" name="content" type="text" value="${fdWithdrawLog.content}"/>
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_BANK_ACCOUNT%></th>	
+					<td>
+											<input class="span2" name="bankAccount" type="text" value="${fdWithdrawLog.bankAccount}"/>
 					</td>							
 			</tr>	
 				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_BANK_CODE%></th>	
+					<td>
+											<jb:select dataType="BC" name="bankCode" value="${fdWithdrawLog.bankCode}"></jb:select>	
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_BANK_NAME%></th>	
+					<td>
+											<input class="span2" name="bankName" type="text" value="${fdWithdrawLog.bankName}"/>
+					</td>							
+			</tr>	
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_BANK_CARD%></th>	
+					<td>
+											<input class="span2" name="bankCard" type="text" value="${fdWithdrawLog.bankCard}"/>
+					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
 					<td>
-											<jb:select dataType="HS" name="handleStatus" value="${ljzWithdrawLog.handleStatus}"></jb:select>	
+											<jb:select dataType="HS" name="handleStatus" value="${fdWithdrawLog.handleStatus}"></jb:select>	
 					</td>							
+			</tr>	
+				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
 					<td>
-											<input class="span2" name="handleLoginId" type="text" value="${ljzWithdrawLog.handleLoginId}"/>
+											<input class="span2" name="handleLoginId" type="text" value="${fdWithdrawLog.handleLoginId}"/>
 					</td>							
-			</tr>	
-				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
 					<td>
-											<input class="span2" name="handleRemark" type="text" value="${ljzWithdrawLog.handleRemark}"/>
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
-					<td>
-					<input class="span2" name="handleTime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_HANDLE_TIME%>'})"   maxlength="0" value="${ljzWithdrawLog.handleTime}"/>
+											<input class="span2" name="handleRemark" type="text" value="${fdWithdrawLog.handleRemark}"/>
 					</td>							
 			</tr>	
 				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
+					<td>
+					<input class="span2" name="handleTime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_HANDLE_TIME%>'})"   maxlength="0" value="${fdWithdrawLog.handleTime}"/>
+					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_PAYMENT_NO%></th>	
 					<td>
-											<input class="span2" name="paymentNo" type="text" value="${ljzWithdrawLog.paymentNo}"/>
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_CMMS_AMT%></th>	
-					<td>
-											<input class="span2" name="cmmsAmt" type="text" value="${ljzWithdrawLog.cmmsAmt}"/>
+											<input class="span2" name="paymentNo" type="text" value="${fdWithdrawLog.paymentNo}"/>
 					</td>							
 			</tr>	
 				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_REF_TYPE%></th>	
 					<td>
-											<input class="span2" name="refType" type="text" value="${ljzWithdrawLog.refType}"/>
+											<input class="span2" name="refType" type="text" value="${fdWithdrawLog.refType}"/>
 					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_APPLY_LOGIN_IP%></th>	
 					<td>
-											<input class="span2" name="applyLoginIp" type="text" value="${ljzWithdrawLog.applyLoginIp}"/>
+											<input class="span2" name="applyLoginIp" type="text" value="${fdWithdrawLog.applyLoginIp}"/>
 					</td>							
 			</tr>	
 			</table>				

@@ -7,7 +7,7 @@
 	$(function() {
 	 parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/ljzWithdrawLogController/add',
+			url : '${pageContext.request.contextPath}/fdWithdrawLogController/add',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -38,20 +38,19 @@
 				<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
 				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ADDTIME%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_CREATE_TIME%></th>	
 					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_ADDTIME%>'})"  maxlength="0" class="required " />
+											<input class="span2" name="createTime" type="text"/>
 					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_UPDATETIME%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_UPDATE_TIME%></th>	
 					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_UPDATETIME%>'})"  maxlength="0" class="required " />
+											<input class="span2" name="updateTime" type="text"/>
 					</td>							
 				</tr>	
 				<tr>	
-					<th><%=TljzWithdrawLog.ALIAS_ISDELETED%></th>	
+					<th><%=TljzWithdrawLog.ALIAS_STATUS%></th>	
 					<td>
-					
-											<input  name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+											<input class="span2" name="status" type="text"/>
 					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>	
 					<td>
@@ -64,49 +63,59 @@
 					
 											<input  name="amount" type="text" class="easyui-validatebox span2" data-options="required:true"/>
 					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_SERVICE_AMT%></th>	
-					<td>
-											<input class="span2" name="serviceAmt" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_USER_ID%></th>	
 					<td>
 											<input class="span2" name="userId" type="text"/>
 					</td>							
+				</tr>	
+				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_CONTENT%></th>	
 					<td>
 											<input class="span2" name="content" type="text"/>
 					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_BANK_ACCOUNT%></th>	
+					<td>
+											<input class="span2" name="bankAccount" type="text"/>
+					</td>							
 				</tr>	
 				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_BANK_CODE%></th>	
+					<td>
+											<jb:select dataType="BC" name="bankCode"></jb:select>	
+					</td>							
+					<th><%=TljzWithdrawLog.ALIAS_BANK_NAME%></th>	
+					<td>
+											<input class="span2" name="bankName" type="text"/>
+					</td>							
+				</tr>	
+				<tr>	
+					<th><%=TljzWithdrawLog.ALIAS_BANK_CARD%></th>	
+					<td>
+											<input class="span2" name="bankCard" type="text"/>
+					</td>							
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
 					<td>
 											<jb:select dataType="HS" name="handleStatus"></jb:select>	
 					</td>							
+				</tr>	
+				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
 					<td>
 											<input class="span2" name="handleLoginId" type="text"/>
 					</td>							
-				</tr>	
-				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
 					<td>
 											<input class="span2" name="handleRemark" type="text"/>
 					</td>							
+				</tr>	
+				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_HANDLE_TIME%></th>	
 					<td>
 					<input class="span2" name="handleTime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzWithdrawLog.FORMAT_HANDLE_TIME%>'})"  maxlength="0" class="" />
 					</td>							
-				</tr>	
-				<tr>	
 					<th><%=TljzWithdrawLog.ALIAS_PAYMENT_NO%></th>	
 					<td>
 											<input class="span2" name="paymentNo" type="text"/>
-					</td>							
-					<th><%=TljzWithdrawLog.ALIAS_CMMS_AMT%></th>	
-					<td>
-											<input class="span2" name="cmmsAmt" type="text"/>
 					</td>							
 				</tr>	
 				<tr>	
