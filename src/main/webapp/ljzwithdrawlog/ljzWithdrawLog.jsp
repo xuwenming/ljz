@@ -84,12 +84,18 @@
 				field : 'amount',
 				title : '<%=TljzWithdrawLog.ALIAS_AMOUNT%>',
 				width : 40,
-				align: "right"
+				align: "right",
+                formatter:function(value,row){
+                    return value.toFixed(2);
+                }
             	}, {
                 field : 'serviceAmt',
                 title : '手续费',
                 width : 40,
-                align: "right"
+                align: "right",
+                formatter:function(value,row){
+                    return value.toFixed(2);
+                }
 				}, {
 				field : 'handleStatusZh',
 				title : '<%=TljzWithdrawLog.ALIAS_HANDLE_STATUS%>',

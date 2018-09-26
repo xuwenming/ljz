@@ -5,9 +5,6 @@
 <script type="text/javascript">
 	$(function() {
 		parent.$.messager.progress('close');
-		$('.amount').each(function(){
-			$(this).text($.trim($(this).text().toFixed(2)));
-		});
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
