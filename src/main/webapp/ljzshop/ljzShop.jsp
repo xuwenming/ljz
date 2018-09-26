@@ -23,6 +23,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzBalanceLogController/manager')}">
+		<script type="text/javascript">
+            $.canViewBalance = true;
+		</script>
+	</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -54,37 +59,47 @@
 				}, {
 				field : 'name',
 				title : '<%=TljzShop.ALIAS_NAME%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'address',
 				title : '<%=TljzShop.ALIAS_ADDRESS%>',
-				width : 50		
-				}, {
+				width : 80
+            	}, {
+                field : 'balance',
+                title : '余额',
+                width : 50,
+                align:'right',
+                formatter:function(value,row){
+                    value = value || 0.00;
+                    if($.canViewBalance) {
+                        return '<a onclick="viewBalance(\'' + row.id + '\')">'+value.toFixed(2)+'</a>';
+                    }
+                    return value.toFixed(2);
+                }
+            	}, {
 				field : 'contactPhone',
 				title : '<%=TljzShop.ALIAS_CONTACT_PHONE%>',
 				width : 50		
 				}, {
 				field : 'contactPeople',
 				title : '<%=TljzShop.ALIAS_CONTACT_PEOPLE%>',
-				width : 50		
+				width : 30
 			}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 30,
 				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
-					return str;
+                    var str = '';
+                    if ($.canEdit) {
+                        str += '<a onclick="editFun(\'' + row.id + '\')">编辑</a>';
+                        //str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
+                    }
+                    str += '&nbsp;';
+                    if ($.canDelete) {
+                        str += '<a onclick="deleteFun(\'' + row.id + '\')">删除</a>';
+                        //str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
+                    }
+                    return str;
 				}
 			} ] ],
 			toolbar : '#toolbar',
@@ -96,6 +111,15 @@
 			}
 		});
 	});
+
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/ljzBalanceLogController/manager?refType=1&userId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '用户余额-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
 
 	function deleteFun(id) {
 		if (id == undefined) {
@@ -129,7 +153,7 @@
 		parent.$.modalDialog({
 			title : '编辑数据',
 			width : 780,
-			height : 500,
+			height : 260,
 			href : '${pageContext.request.contextPath}/ljzShopController/editPage?id=' + id,
 			buttons : [ {
 				text : '编辑',
@@ -150,7 +174,7 @@
 		parent.$.modalDialog({
 			title : '查看数据',
 			width : 780,
-			height : 500,
+			height : 300,
 			href : '${pageContext.request.contextPath}/ljzShopController/view?id=' + id
 		});
 	}
@@ -159,7 +183,7 @@
 		parent.$.modalDialog({
 			title : '添加数据',
 			width : 780,
-			height : 500,
+			height : 260,
 			href : '${pageContext.request.contextPath}/ljzShopController/addPage',
 			buttons : [ {
 				text : '添加',
@@ -202,12 +226,16 @@
 		<div data-options="region:'north',title:'查询条件',border:false" style="height: 70px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>
-							<th width="60"><%=TljzShop.ALIAS_NAME%></th>
-							<td>
-								<input type="text" name="name" maxlength="128" class="span2"/>
-							</td>
-						</tr>
+					<tr>
+						<th width="60">店铺ID</th>
+						<td>
+							<input type="text" name="id" maxlength="128" class="span2"/>
+						</td>
+						<th width="60"><%=TljzShop.ALIAS_NAME%></th>
+						<td>
+							<input type="text" name="name" maxlength="128" class="span2"/>
+						</td>
+					</tr>
 				</table>
 			</form>
 		</div>
@@ -219,7 +247,7 @@
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzShopController/addPage')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzShopController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

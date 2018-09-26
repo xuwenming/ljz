@@ -37,44 +37,28 @@
 		<form id="form" method="post">		
 				<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TljzShop.ALIAS_ADDTIME%></th>	
-					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzShop.FORMAT_ADDTIME%>'})"  maxlength="0" class="required " />
-					</td>							
-					<th><%=TljzShop.ALIAS_UPDATETIME%></th>	
-					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TljzShop.FORMAT_UPDATETIME%>'})"  maxlength="0" class="required " />
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TljzShop.ALIAS_ISDELETED%></th>	
-					<td>
-					
-											<input  name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-					<th><%=TljzShop.ALIAS_NAME%></th>	
-					<td>
-											<input class="span2" name="name" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TljzShop.ALIAS_ADDRESS%></th>	
-					<td>
-					
-											<input  name="address" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-					<th><%=TljzShop.ALIAS_CONTACT_PHONE%></th>	
-					<td>
-											<input class="span2" name="contactPhone" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TljzShop.ALIAS_CONTACT_PEOPLE%></th>	
-					<td>
-											<input class="span2" name="contactPeople" type="text"/>
-					</td>							
-				</tr>	
+				<tr>
+					<th><%=TljzShop.ALIAS_NAME%></th>
+					<td colspan="3">
+						<input class="easyui-validatebox span2" data-options="required:true" maxlength="100" name="name" type="text" style="width: 510px;"/>
+					</td>
+				</tr>
+				<tr>
+					<th><%=TljzShop.ALIAS_ADDRESS%></th>
+					<td colspan="3">
+						<input class="easyui-validatebox span2" data-options="required:true" maxlength="200" name="address" type="text" style="width: 510px;"/>
+					</td>
+				</tr>
+				<tr>
+					<th width="10%"><%=TljzShop.ALIAS_CONTACT_PEOPLE%></th>
+					<td width="40%">
+						<input class="easyui-validatebox span2" data-options="required:true" maxlength="20"  name="contactPeople" type="text"/>
+					</td>
+					<th width="10%"><%=TljzShop.ALIAS_CONTACT_PHONE%></th>
+					<td width="40%">
+						<input class="easyui-validatebox span2" data-options="required:true" maxlength="20"  name="contactPhone" type="text"/>
+					</td>
+				</tr>
 			</table>		
 		</form>
 	</div>

@@ -4,10 +4,8 @@ import com.mobian.absx.F;
 import com.mobian.dao.LjzUserDaoI;
 import com.mobian.model.TljzPrizeLog;
 import com.mobian.model.TljzUser;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.LjzPrizeLog;
-import com.mobian.pageModel.LjzUser;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
+import com.mobian.service.LjzBalanceServiceI;
 import com.mobian.service.LjzUserServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
@@ -25,6 +23,9 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 	@Autowired
 	private LjzUserDaoI ljzUserDao;
 
+	@Autowired
+	private LjzBalanceServiceI ljzBalanceService;
+
 	@Override
 	public DataGrid dataGrid(LjzUser ljzUser, PageHelper ph) {
 		List<LjzUser> ol = new ArrayList<LjzUser>();
@@ -36,6 +37,9 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 			for (TljzUser t : l) {
 				LjzUser o = new LjzUser();
 				BeanUtils.copyProperties(t, o);
+				// 获取余额
+				LjzBalance ljzBalance = ljzBalanceService.addOrGetBalance(t.getId());
+				o.setBalance(ljzBalance.getAmount());
 				ol.add(o);
 			}
 		}
@@ -51,10 +55,14 @@ public class LjzUserServiceImpl extends BaseServiceImpl<LjzUser> implements LjzU
 			if (!F.empty(ljzUser.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", ljzUser.getIsdeleted());
-			}		
+			}
+			if (!F.empty(ljzUser.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", ljzUser.getId());
+			}
 			if (!F.empty(ljzUser.getNickName())) {
-				whereHql += " and t.nickName = :nickName";
-				params.put("nickName", ljzUser.getNickName());
+				whereHql += " and t.nickName like :nickName";
+				params.put("nickName", "%" + ljzUser.getNickName() + "%");
 			}		
 			if (!F.empty(ljzUser.getPhone())) {
 				whereHql += " and t.phone = :phone";

@@ -54,7 +54,11 @@ public class LjzGoodsServiceImpl extends BaseServiceImpl<LjzGoods> implements Lj
 			if (!F.empty(ljzGoods.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", ljzGoods.getIsdeleted());
-			}		
+			}
+			if (!F.empty(ljzGoods.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", ljzGoods.getId());
+			}
 			if (!F.empty(ljzGoods.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", ljzGoods.getShopId());

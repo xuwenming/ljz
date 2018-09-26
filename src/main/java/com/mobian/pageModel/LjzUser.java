@@ -1,5 +1,6 @@
 package com.mobian.pageModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -19,7 +20,7 @@ public class LjzUser implements java.io.Serializable {
 	private java.lang.String refType;	
 	private java.lang.String recommends;	
 
-	
+	private BigDecimal balance;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -101,4 +102,11 @@ public class LjzUser implements java.io.Serializable {
 		return this.recommends;
 	}
 
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
 }

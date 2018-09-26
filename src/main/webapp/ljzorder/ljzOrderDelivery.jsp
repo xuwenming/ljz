@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.model.TljzShop" %>
+<%@ page import="com.mobian.model.TljzOrder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -7,7 +7,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/ljzShopController/edit',
+			url : '${pageContext.request.contextPath}/ljzOrderController/delivery',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -23,7 +23,7 @@
 				parent.$.messager.progress('close');
 				result = $.parseJSON(result);
 				if (result.success) {
-					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+					parent.$.modalDialog.openner_dataGrid.location.reload();//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
 					parent.$.messager.alert('错误', result.msg, 'error');
@@ -35,31 +35,28 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-				<input type="hidden" name="id" value = "${ljzShop.id}"/>
+			<input type="hidden" name="id" value = "${orderId}"/>
+			<input name="status" type="hidden"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th><%=TljzShop.ALIAS_NAME%></th>
+					<th width="10%">快递公司</th>
 					<td colspan="3">
-						<input value="${ljzShop.name}" class="easyui-validatebox span2" data-options="required:true" maxlength="100" name="name" type="text" style="width: 510px;"/>
+						<jb:select dataType="EP" name="expressName" required="true"></jb:select>
 					</td>
 				</tr>
 				<tr>
-					<th><%=TljzShop.ALIAS_ADDRESS%></th>
+					<th>运单编号</th>
 					<td colspan="3">
-						<input value="${ljzShop.address}" class="easyui-validatebox span2" data-options="required:true" maxlength="200" name="address" type="text" style="width: 510px;"/>
+						<input class="easyui-validatebox span2" data-options="required:true" maxlength="100"  name="expressNo" type="text" style="width: 510px;"/>
 					</td>
 				</tr>
 				<tr>
-					<th width="10%"><%=TljzShop.ALIAS_CONTACT_PEOPLE%></th>
-					<td width="40%">
-						<input value="${ljzShop.contactPeople}" class="easyui-validatebox span2" data-options="required:true" maxlength="20"  name="contactPeople" type="text"/>
-					</td>
-					<th width="10%"><%=TljzShop.ALIAS_CONTACT_PHONE%></th>
-					<td width="40%">
-						<input value="${ljzShop.contactPhone}" class="easyui-validatebox span2" data-options="required:true" maxlength="20"  name="contactPhone" type="text"/>
+					<th>备注</th>
+					<td colspan="3">
+						<textarea class ="easyui-validatebox" data-options="required:true" name="remark" style="width: 510px;"></textarea>
 					</td>
 				</tr>
-			</table>				
+			</table>
 		</form>
 	</div>
 </div>

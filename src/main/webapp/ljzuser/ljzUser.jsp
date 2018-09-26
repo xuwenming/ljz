@@ -23,6 +23,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzBalanceLogController/manager')}">
+		<script type="text/javascript">
+            $.canViewBalance = true;
+		</script>
+	</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -45,69 +50,50 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
+				title : '用户ID',
+				width : 30
 				}, {
 				field : 'addtime',
-				title : '<%=TljzUser.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'updatetime',
-				title : '<%=TljzUser.ALIAS_UPDATETIME%>',
-				width : 50		
-				}, {
-				field : 'isdeleted',
-				title : '<%=TljzUser.ALIAS_ISDELETED%>',
+				title : '注册时间',
 				width : 50		
 				}, {
 				field : 'nickName',
 				title : '<%=TljzUser.ALIAS_NICK_NAME%>',
 				width : 50		
 				}, {
-				field : 'phone',
-				title : '<%=TljzUser.ALIAS_PHONE%>',
-				width : 50		
-				}, {
 				field : 'icon',
 				title : '<%=TljzUser.ALIAS_ICON%>',
-				width : 50		
-				}, {
-				field : 'sex',
-				title : '<%=TljzUser.ALIAS_SEX%>',
-				width : 50		
-				}, {
-				field : 'refId',
-				title : '<%=TljzUser.ALIAS_REF_ID%>',
-				width : 50		
+				width : 50,
+                formatter : function(value, row, index) {
+                    var str = "";
+                    if(value){
+                        str = "<img style=\"height: 60px;width: 80px;\" src=\""+value+"\" />";
+                    }
+                    return str;
+                }
+            	}, {
+                field : 'balance',
+                title : '余额',
+                width : 30,
+                align:'right',
+                formatter:function(value,row){
+                    if($.canViewBalance) {
+                        return '<a onclick="viewBalance(\'' + row.id + '\')">'+value.toFixed(2)+'</a>';
+                    }
+                    return value.toFixed(2);
+                }
 				}, {
 				field : 'refType',
-				title : '<%=TljzUser.ALIAS_REF_TYPE%>',
-				width : 50		
+				title : '类型',
+				width : 30,
+                formatter : function(value, row, index) {
+                    return value == 'wx' ? "微信" : "模拟";
+                }
 				}, {
 				field : 'recommends',
-				title : '<%=TljzUser.ALIAS_RECOMMENDS%>',
-				width : 50		
-			}, {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
-					return str;
-				}
-			} ] ],
+				title : '推荐人id',
+				width : 30
+            } ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -117,6 +103,15 @@
 			}
 		});
 	});
+
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/ljzBalanceLogController/manager?refType=2&userId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '用户余额-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
 
 	function deleteFun(id) {
 		if (id == undefined) {
@@ -220,57 +215,28 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 70px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th><%=TljzUser.ALIAS_ADDTIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
-							</td>
-							<th><%=TljzUser.ALIAS_UPDATETIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzUser.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzUser.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
-							</td>
-							<th><%=TljzUser.ALIAS_ISDELETED%></th>	
-							<td>
-											<input type="text" name="isdeleted" maxlength="0" class="span2"/>
-							</td>
-							<th><%=TljzUser.ALIAS_NICK_NAME%></th>	
-							<td>
-											<input type="text" name="nickName" maxlength="128" class="span2"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzUser.ALIAS_PHONE%></th>	
-							<td>
-											<input type="text" name="phone" maxlength="32" class="span2"/>
-							</td>
-							<th><%=TljzUser.ALIAS_ICON%></th>	
-							<td>
-											<input type="text" name="icon" maxlength="512" class="span2"/>
-							</td>
-							<th><%=TljzUser.ALIAS_SEX%></th>	
-							<td>
-											<input type="text" name="sex" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TljzUser.ALIAS_REF_ID%></th>	
-							<td>
-											<input type="text" name="refId" maxlength="64" class="span2"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzUser.ALIAS_REF_TYPE%></th>	
-							<td>
-											<input type="text" name="refType" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TljzUser.ALIAS_RECOMMENDS%></th>	
-							<td>
-											<input type="text" name="recommends" maxlength="512" class="span2"/>
-							</td>
-						</tr>	
+					<tr>
+						<th>用户ID</th>
+						<td>
+							<input type="text" name="id" maxlength="128" class="span2"/>
+						</td>
+						<th><%=TljzUser.ALIAS_NICK_NAME%></th>
+						<td>
+							<input type="text" name="nickName" maxlength="128" class="span2"/>
+						</td>
+						<th>类型</th>
+						<td>
+							<select name="refType" class="easyui-combobox"
+									data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+								<option value="">全部</option>
+								<option value="wx">微信</option>
+								<option value="ag">模拟</option>
+							</select>
+						</td>
+					</tr>
 				</table>
 			</form>
 		</div>
@@ -280,9 +246,9 @@
 	</div>
 	<div id="toolbar" style="display: none;">
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzUserController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
+			<%--<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>--%>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzUserController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.listener.Application;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -24,11 +26,27 @@ public class LjzOrder implements java.io.Serializable {
 	private java.lang.String payWay;	
 	private Date payTime;			
 	private BigDecimal freight;	
-	private java.lang.Integer recommend;	
+	private java.lang.Integer recommend;
+	private String expressName;
+	private String expressNo;
+	private String remark;
 
 	private List<LjzOrderItem> orderItemList;
 	private Integer goodsId;
 	private Boolean isYestoday;
+
+	public String getStatusZh() {
+		return Application.getString(this.status);
+	}
+
+	public String getPayStatusZh() {
+		return Application.getString(this.payStatus);
+	}
+
+	public String getExpressNameZh() {
+		return Application.getString(this.expressName);
+	}
+
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -167,5 +185,29 @@ public class LjzOrder implements java.io.Serializable {
 
 	public void setYestoday(Boolean yestoday) {
 		isYestoday = yestoday;
+	}
+
+	public String getExpressName() {
+		return expressName;
+	}
+
+	public void setExpressName(String expressName) {
+		this.expressName = expressName;
+	}
+
+	public String getExpressNo() {
+		return expressNo;
+	}
+
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

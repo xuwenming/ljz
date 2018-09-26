@@ -21,6 +21,9 @@ public class LjzPrizeLog implements java.io.Serializable {
 	private Boolean isToday;
 	private LjzUser user;
 
+	private Date addtimeStart;
+	private Date addtimeEnd;
+
 	public void setId(java.lang.Integer value) {
 		this.id = value;
 	}
@@ -102,5 +105,21 @@ public class LjzPrizeLog implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Date getAddtimeStart() {
+		return addtimeStart;
+	}
+
+	public void setAddtimeStart(Date addtimeStart) {
+		this.addtimeStart = addtimeStart;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
 	}
 }

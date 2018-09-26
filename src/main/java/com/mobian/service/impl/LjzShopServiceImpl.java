@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,9 +11,11 @@ import java.util.UUID;
 import com.mobian.absx.F;
 import com.mobian.dao.LjzShopDaoI;
 import com.mobian.model.TljzShop;
+import com.mobian.pageModel.LjzBalance;
 import com.mobian.pageModel.LjzShop;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.LjzBalanceServiceI;
 import com.mobian.service.LjzShopServiceI;
 
 import org.springframework.beans.BeanUtils;
@@ -26,6 +29,9 @@ public class LjzShopServiceImpl extends BaseServiceImpl<LjzShop> implements LjzS
 	@Autowired
 	private LjzShopDaoI ljzShopDao;
 
+	@Autowired
+	private LjzBalanceServiceI ljzBalanceService;
+
 	@Override
 	public DataGrid dataGrid(LjzShop ljzShop, PageHelper ph) {
 		List<LjzShop> ol = new ArrayList<LjzShop>();
@@ -37,6 +43,9 @@ public class LjzShopServiceImpl extends BaseServiceImpl<LjzShop> implements LjzS
 			for (TljzShop t : l) {
 				LjzShop o = new LjzShop();
 				BeanUtils.copyProperties(t, o);
+				// 获取余额
+				LjzBalance ljzBalance = ljzBalanceService.addOrGetBalance(t.getId(), 1, BigDecimal.ZERO);
+				o.setBalance(ljzBalance.getAmount());
 				ol.add(o);
 			}
 		}

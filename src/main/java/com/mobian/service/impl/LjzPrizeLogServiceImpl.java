@@ -80,6 +80,14 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 			if(!F.empty(ljzPrizeLog.getToday()) && ljzPrizeLog.getToday()) {
 				whereHql += " and DATEDIFF(t.addtime, NOW()) = 0";
 			}
+			if (ljzPrizeLog.getAddtimeStart() != null) {
+				whereHql += " and t.addtime >= :addtimeStart";
+				params.put("addtimeStart", ljzPrizeLog.getAddtimeStart());
+			}
+			if (ljzPrizeLog.getAddtimeEnd() != null) {
+				whereHql += " and t.addtime <= :addtimeEnd";
+				params.put("addtimeEnd", ljzPrizeLog.getAddtimeEnd());
+			}
 		}	
 		return whereHql;
 	}

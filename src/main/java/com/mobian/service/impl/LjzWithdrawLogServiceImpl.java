@@ -250,12 +250,14 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 				} else {
 					ljzWithdrawLog.setHandleStatus("HS01");
 					ljzWithdrawLog.setHandleLoginId(loginId);
+					ljzWithdrawLog.setHandleTime(new Date());
 					ljzWithdrawLog.setHandleRemark("提现失败" + resultMap.get("err_code_des"));
 					edit(ljzWithdrawLog);
 				}
 			} catch (Exception e) {
 				ljzWithdrawLog.setHandleStatus("HS01");
 				ljzWithdrawLog.setHandleLoginId(loginId);
+				ljzWithdrawLog.setHandleTime(new Date());
 				ljzWithdrawLog.setHandleRemark("提现失败--接口异常");
 				edit(ljzWithdrawLog);
 			}

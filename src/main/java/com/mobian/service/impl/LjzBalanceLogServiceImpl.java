@@ -45,6 +45,12 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 			for (TljzBalanceLog t : l) {
 				LjzBalanceLog o = new LjzBalanceLog();
 				BeanUtils.copyProperties(t, o);
+				if(!F.empty(ljzBalanceLog.getUserId())) {
+					o.setUserId(ljzBalanceLog.getUserId());
+				} else {
+					LjzBalance balance = ljzBalanceService.get(t.getBalanceId());
+					o.setUserId(balance.getRefId());
+				}
 				ol.add(o);
 			}
 		}
@@ -80,7 +86,15 @@ public class LjzBalanceLogServiceImpl extends BaseServiceImpl<LjzBalanceLog> imp
 			if (!F.empty(ljzBalanceLog.getRemark())) {
 				whereHql += " and t.remark = :remark";
 				params.put("remark", ljzBalanceLog.getRemark());
-			}		
+			}
+			if (ljzBalanceLog.getAddtimeStart() != null) {
+				whereHql += " and t.addtime >= :addtimeStart";
+				params.put("addtimeStart", ljzBalanceLog.getAddtimeStart());
+			}
+			if (ljzBalanceLog.getAddtimeEnd() != null) {
+				whereHql += " and t.addtime <= :addtimeEnd";
+				params.put("addtimeEnd", ljzBalanceLog.getAddtimeEnd());
+			}
 		}	
 		return whereHql;
 	}

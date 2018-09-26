@@ -80,6 +80,9 @@ public class TljzOrder implements java.io.Serializable,IEntity{
 	private BigDecimal freight;
 	//
 	private java.lang.Integer recommend;
+	private String expressName;
+	private String expressNo;
+	private String remark;
 	//columns END
 
 
@@ -238,8 +241,34 @@ public class TljzOrder implements java.io.Serializable,IEntity{
 	public void setRecommend(java.lang.Integer recommend) {
 		this.recommend = recommend;
 	}
-	
-	
+
+	@Column(name = "express_name", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getExpressName() {
+		return expressName;
+	}
+
+	public void setExpressName(String expressName) {
+		this.expressName = expressName;
+	}
+
+	@Column(name = "express_no", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public String getExpressNo() {
+		return expressNo;
+	}
+
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+
+	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

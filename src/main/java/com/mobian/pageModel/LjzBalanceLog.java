@@ -24,6 +24,9 @@ public class LjzBalanceLog implements java.io.Serializable {
 	private Integer userId;
 	private LjzUser user;
 
+	private Date addtimeStart;
+	private Date addtimeEnd;
+
 	public String getRefTypeName() {
 		return Application.getString(refType);
 	}
@@ -117,5 +120,21 @@ public class LjzBalanceLog implements java.io.Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Date getAddtimeStart() {
+		return addtimeStart;
+	}
+
+	public void setAddtimeStart(Date addtimeStart) {
+		this.addtimeStart = addtimeStart;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
 	}
 }

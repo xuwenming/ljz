@@ -50,7 +50,13 @@
 				}, {
 				field : 'title',
 				title : '<%=TljzGoods.ALIAS_TITLE%>',
-				width : 60
+				width : 60,
+                formatter : function (value, row, index) {
+                    if ($.canView) {
+                        return '<a onclick="viewFun(\'' + row.id + '\')">'+value+'</a>';
+                    }
+                    return value
+                }
 				}, {
                 field : 'shopId',
                 title : '<%=TljzGoods.ALIAS_SHOP_ID%>',
@@ -175,16 +181,12 @@
 	}
 
 	function viewFun(id) {
-		if (id == undefined) {
-			var rows = dataGrid.datagrid('getSelections');
-			id = rows[0].id;
-		}
-		parent.$.modalDialog({
-			title : '查看数据',
-			width : 780,
-			height : 500,
-			href : '${pageContext.request.contextPath}/ljzGoodsController/view?id=' + id
-		});
+        var href = '${pageContext.request.contextPath}/ljzGoodsController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '商品详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
 	}
 
 	function addFun() {
@@ -235,6 +237,10 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 						<tr>
+							<th>商品ID</th>
+							<td>
+								<input type="text" name="id" maxlength="10" class="span2"/>
+							</td>
 							<th><%=TljzGoods.ALIAS_SHOP_ID%></th>	
 							<td>
 								<input type="text" name="shopId" maxlength="10" class="span2"/>

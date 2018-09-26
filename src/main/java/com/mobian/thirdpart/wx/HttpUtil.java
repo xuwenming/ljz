@@ -159,7 +159,7 @@ public class HttpUtil {
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
 			String mchId = Application.getString(WeixinUtil.MCH_ID);
 
-			FileInputStream instream = new FileInputStream(new File(HttpUtil.class.getClassLoader().getResource("apiclient_cert.p12").getPath()));
+			FileInputStream instream = new FileInputStream(new File(HttpUtil.class.getClassLoader().getResource("1360786202_20180925_cert.p12").getPath()));
 			try {
 				keyStore.load(instream, mchId.toCharArray());
 			} finally {

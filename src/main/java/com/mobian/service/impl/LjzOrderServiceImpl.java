@@ -61,7 +61,11 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 			if (!F.empty(ljzOrder.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", ljzOrder.getIsdeleted());
-			}		
+			}
+			if (!F.empty(ljzOrder.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", ljzOrder.getId());
+			}
 			if (!F.empty(ljzOrder.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", ljzOrder.getShopId());

@@ -50,51 +50,31 @@
 				hidden : true
 				}, {
 				field : 'addtime',
-				title : '<%=TljzPrizeLog.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'updatetime',
-				title : '<%=TljzPrizeLog.ALIAS_UPDATETIME%>',
-				width : 50		
-				}, {
-				field : 'isdeleted',
-				title : '<%=TljzPrizeLog.ALIAS_ISDELETED%>',
-				width : 50		
+				title : '中奖时间',
+				width : 50
 				}, {
 				field : 'userId',
 				title : '<%=TljzPrizeLog.ALIAS_USER_ID%>',
 				width : 50		
 				}, {
 				field : 'goodsId',
-				title : '<%=TljzPrizeLog.ALIAS_GOODS_ID%>',
+				title : '商品ID',
 				width : 50		
 				}, {
 				field : 'amount',
 				title : '<%=TljzPrizeLog.ALIAS_AMOUNT%>',
-				width : 50		
+				width : 50,
+                formatter:function(value,row){
+                    return value.toFixed(2);
+                }
 				}, {
 				field : 'quantity',
-				title : '<%=TljzPrizeLog.ALIAS_QUANTITY%>',
-				width : 50		
-			}, {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
-					return str;
-				}
+				title : '购买数量',
+				width : 50
+            	}, {
+                field : 'remark',
+                title : '备注',
+                width : 80
 			} ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -208,43 +188,30 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th><%=TljzPrizeLog.ALIAS_ADDTIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzPrizeLog.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzPrizeLog.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
-							</td>
-							<th><%=TljzPrizeLog.ALIAS_UPDATETIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzPrizeLog.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzPrizeLog.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
-							</td>
-							<th><%=TljzPrizeLog.ALIAS_ISDELETED%></th>	
-							<td>
-											<input type="text" name="isdeleted" maxlength="0" class="span2"/>
-							</td>
+						<tr>
 							<th><%=TljzPrizeLog.ALIAS_USER_ID%></th>	
 							<td>
-											<input type="text" name="userId" maxlength="10" class="span2"/>
+								<input type="text" name="userId" maxlength="10" class="span2"/>
 							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzPrizeLog.ALIAS_GOODS_ID%></th>	
+							<th>商品ID</th>
 							<td>
-											<input type="text" name="goodsId" maxlength="10" class="span2"/>
+								<input type="text" name="goodsId" maxlength="10" class="span2"/>
 							</td>
-							<th><%=TljzPrizeLog.ALIAS_AMOUNT%></th>	
+							<th style="width: 50px;">中奖时间</th>
 							<td>
-											<input type="text" name="amount" maxlength="19" class="span2"/>
+								<input type="text" class="span2" id="addtimeStart" name="addtimeStart"
+
+									   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'addtimeEnd\',{d:-1});}'})"
+								/>
+								<input type="text" class="span2" id="addtimeEnd" name="addtimeEnd"
+
+									   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'addtimeStart\',{d:1});}'})"
+								/>
 							</td>
-							<th><%=TljzPrizeLog.ALIAS_QUANTITY%></th>	
-							<td>
-											<input type="text" name="quantity" maxlength="10" class="span2"/>
-							</td>
-						</tr>	
+						</tr>
 				</table>
 			</form>
 		</div>
@@ -254,9 +221,9 @@
 	</div>
 	<div id="toolbar" style="display: none;">
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzPrizeLogController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
+			<%--<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>--%>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzPrizeLogController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

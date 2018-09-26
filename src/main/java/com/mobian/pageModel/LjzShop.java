@@ -1,5 +1,6 @@
 package com.mobian.pageModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -14,9 +15,9 @@ public class LjzShop implements java.io.Serializable {
 	private java.lang.String name;	
 	private java.lang.String address;	
 	private java.lang.String contactPhone;	
-	private java.lang.String contactPeople;	
+	private java.lang.String contactPeople;
 
-	
+	private BigDecimal balance;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -77,4 +78,11 @@ public class LjzShop implements java.io.Serializable {
 		return this.contactPeople;
 	}
 
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
 }

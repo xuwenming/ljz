@@ -1,26 +1,21 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.LjzBalanceLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.alibaba.fastjson.JSON;
+import com.mobian.absx.F;
+import com.mobian.pageModel.*;
 import com.mobian.service.LjzBalanceLogServiceI;
-
+import com.mobian.service.LjzBalanceServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * LjzBalanceLog管理控制器
@@ -35,6 +30,8 @@ public class LjzBalanceLogController extends BaseController {
 	@Autowired
 	private LjzBalanceLogServiceI ljzBalanceLogService;
 
+	@Autowired
+	private LjzBalanceServiceI ljzBalanceService;
 
 	/**
 	 * 跳转到LjzBalanceLog管理页面
@@ -42,25 +39,33 @@ public class LjzBalanceLogController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/manager")
-	public String manager(HttpServletRequest request) {
+	public String manager(Integer userId, Integer refType, HttpServletRequest request) {
+		request.setAttribute("userId", userId);
+		request.setAttribute("refType", refType);
 		return "/ljzbalancelog/ljzBalanceLog";
 	}
 
 	/**
 	 * 获取LjzBalanceLog数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(LjzBalanceLog ljzBalanceLog, PageHelper ph) {
+		if(!F.empty(ljzBalanceLog.getUserId())) {
+			LjzBalance ljzBalance = ljzBalanceService.addOrGetBalance(ljzBalanceLog.getUserId(), Integer.valueOf(ljzBalanceLog.getRefType()), BigDecimal.ZERO);
+			ljzBalanceLog.setBalanceId(ljzBalance.getId());
+			ljzBalanceLog.setRefId(null);
+			ljzBalanceLog.setRefType(null);
+		}
 		return ljzBalanceLogService.dataGrid(ljzBalanceLog, ph);
 	}
 	/**
 	 * 获取LjzBalanceLog数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 

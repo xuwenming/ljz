@@ -45,88 +45,66 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
+				title : '订单ID',
+				width : 30,
+                formatter : function (value, row, index) {
+                    if ($.canView) {
+                        return '<a onclick="viewFun(\'' + row.id + '\')">'+value+'</a>';
+                    }
+                    return value
+                }
 				}, {
 				field : 'addtime',
 				title : '<%=TljzOrder.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'updatetime',
-				title : '<%=TljzOrder.ALIAS_UPDATETIME%>',
-				width : 50		
-				}, {
-				field : 'isdeleted',
-				title : '<%=TljzOrder.ALIAS_ISDELETED%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'shopId',
 				title : '<%=TljzOrder.ALIAS_SHOP_ID%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'userId',
-				title : '<%=TljzOrder.ALIAS_USER_ID%>',
-				width : 50		
+				title : '用户ID',
+				width : 30
 				}, {
 				field : 'totalPrice',
-				title : '<%=TljzOrder.ALIAS_TOTAL_PRICE%>',
-				width : 50		
+				title : '金额',
+				width : 30,
+                formatter:function(value,row){
+                    return value.toFixed(2);
+                }
 				}, {
-				field : 'status',
+				field : 'statusZh',
 				title : '<%=TljzOrder.ALIAS_STATUS%>',
-				width : 50		
+				width : 50,
+                formatter: function (value, row, index) {
+                    var str = value;
+                    if(row.status == "OD10") str = '<font style="color:#1AAFF0;">'+value+'</font>';
+                    else if(row.status == "OD20")str =  '<font color="#f6383a;">'+value+'</font>';
+//                    else if(row.status == "OD20")str =  '<font color="#4cd964;">'+value+'</font>';
+
+                    return str;
+                }
 				}, {
-				field : 'deliveryAddress',
-				title : '<%=TljzOrder.ALIAS_DELIVERY_ADDRESS%>',
-				width : 50		
-				}, {
-				field : 'contactPhone',
-				title : '<%=TljzOrder.ALIAS_CONTACT_PHONE%>',
-				width : 50		
-				}, {
-				field : 'contactPeople',
-				title : '<%=TljzOrder.ALIAS_CONTACT_PEOPLE%>',
-				width : 50		
-				}, {
-				field : 'payStatus',
+				field : 'payStatusZh',
 				title : '<%=TljzOrder.ALIAS_PAY_STATUS%>',
-				width : 50		
-				}, {
-				field : 'payWay',
-				title : '<%=TljzOrder.ALIAS_PAY_WAY%>',
-				width : 50		
+				width : 50,
+                formatter : function(value, row, index) {
+                    if(row.payStatus == 'PS02') return '<font color="#4cd964;">'+value+'</font>';
+                    else if(row.payStatus == 'PS03') return  '<font color="red">'+value+'</font>';
+
+                    return value;
+                }
 				}, {
 				field : 'payTime',
 				title : '<%=TljzOrder.ALIAS_PAY_TIME%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'freight',
 				title : '<%=TljzOrder.ALIAS_FREIGHT%>',
-				width : 50		
-				}, {
-				field : 'recommend',
-				title : '<%=TljzOrder.ALIAS_RECOMMEND%>',
-				width : 50		
-			}, {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
-					return str;
-				}
+				width : 30,
+                formatter:function(value,row){
+                    return value.toFixed(2);
+                }
 			} ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -183,18 +161,14 @@
 		});
 	}
 
-	function viewFun(id) {
-		if (id == undefined) {
-			var rows = dataGrid.datagrid('getSelections');
-			id = rows[0].id;
-		}
-		parent.$.modalDialog({
-			title : '查看数据',
-			width : 780,
-			height : 500,
-			href : '${pageContext.request.contextPath}/ljzOrderController/view?id=' + id
-		});
-	}
+    function viewFun(id) {
+        var href = '${pageContext.request.contextPath}/ljzOrderController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '订单详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
 
 	function addFun() {
 		parent.$.modalDialog({
@@ -240,80 +214,31 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th><%=TljzOrder.ALIAS_ADDTIME%></th>	
+						<tr>
+							<th>订单ID</th>
 							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_UPDATETIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_ISDELETED%></th>	
-							<td>
-											<input type="text" name="isdeleted" maxlength="0" class="span2"/>
+								<input type="text" name="id" maxlength="10" class="span2"/>
 							</td>
 							<th><%=TljzOrder.ALIAS_SHOP_ID%></th>	
 							<td>
-											<input type="text" name="shopId" maxlength="10" class="span2"/>
+								<input type="text" name="shopId" maxlength="10" class="span2"/>
 							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzOrder.ALIAS_USER_ID%></th>	
+							<th>用户ID</th>
 							<td>
-											<input type="text" name="userId" maxlength="10" class="span2"/>
+								<input type="text" name="userId" maxlength="10" class="span2"/>
 							</td>
-							<th><%=TljzOrder.ALIAS_TOTAL_PRICE%></th>	
+							<th><%=TljzOrder.ALIAS_STATUS%></th>
 							<td>
-											<input type="text" name="totalPrice" maxlength="19" class="span2"/>
+								<jb:select dataType="OD" name="status"></jb:select>
 							</td>
-							<th><%=TljzOrder.ALIAS_STATUS%></th>	
+							<th><%=TljzOrder.ALIAS_PAY_STATUS%></th>
 							<td>
-											<jb:select dataType="OD" name="status"></jb:select>	
+								<jb:select dataType="PS" name="payStatus"></jb:select>
 							</td>
-							<th><%=TljzOrder.ALIAS_DELIVERY_ADDRESS%></th>	
-							<td>
-											<input type="text" name="deliveryAddress" maxlength="512" class="span2"/>
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzOrder.ALIAS_CONTACT_PHONE%></th>	
-							<td>
-											<input type="text" name="contactPhone" maxlength="32" class="span2"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_CONTACT_PEOPLE%></th>	
-							<td>
-											<input type="text" name="contactPeople" maxlength="32" class="span2"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_PAY_STATUS%></th>	
-							<td>
-											<jb:select dataType="PS" name="payStatus"></jb:select>	
-							</td>
-							<th><%=TljzOrder.ALIAS_PAY_WAY%></th>	
-							<td>
-											<jb:select dataType="PW" name="payWay"></jb:select>	
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TljzOrder.ALIAS_PAY_TIME%></th>	
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_PAY_TIME%>'})" id="payTimeBegin" name="payTimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TljzOrder.FORMAT_PAY_TIME%>'})" id="payTimeEnd" name="payTimeEnd"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_FREIGHT%></th>	
-							<td>
-											<input type="text" name="freight" maxlength="19" class="span2"/>
-							</td>
-							<th><%=TljzOrder.ALIAS_RECOMMEND%></th>	
-							<td>
-											<input type="text" name="recommend" maxlength="10" class="span2"/>
-							</td>
-						</tr>	
+						</tr>
 				</table>
 			</form>
 		</div>
@@ -323,9 +248,9 @@
 	</div>
 	<div id="toolbar" style="display: none;">
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzOrderController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
+			<%--<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>--%>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/ljzOrderController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

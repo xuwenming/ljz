@@ -7,14 +7,13 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.LjzOrder;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.absx.F;
+import com.mobian.pageModel.*;
 import com.mobian.service.LjzOrderServiceI;
 
+import com.mobian.util.ConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -158,6 +157,28 @@ public class LjzOrderController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
+	}
+
+	@RequestMapping("/deliveryPage")
+	public String deliveryPage(HttpServletRequest request, Integer id) {
+		request.setAttribute("orderId", id);
+		LjzOrder ljzOrder = ljzOrderService.get(id);
+		request.setAttribute("ljzOrder", ljzOrder);
+		return "/ljzorder/ljzOrderDelivery";
+	}
+
+	@RequestMapping("/delivery")
+	@ResponseBody
+	public Json delivery(LjzOrder ljzOrder) {
+		Json json = new Json();
+
+		ljzOrder.setStatus("OD20");
+		ljzOrderService.edit(ljzOrder);
+
+		json.setSuccess(true);
+		json.setMsg("发货成功！");
+
+		return json;
 	}
 
 }

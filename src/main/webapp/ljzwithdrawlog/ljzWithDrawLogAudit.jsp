@@ -6,7 +6,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/fdWithdrawLogController/editAudit',
+			url : '${pageContext.request.contextPath}/ljzWithdrawLogController/editAudit',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -53,13 +53,13 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-				<input type="hidden" name="id" value = "${fdWithdrawLog.id}"/>
-				<input name="handleStatus" type="hidden" value="${fdWithdrawLog.handleStatus}"/>
-				<input name="oldHandleStatus" type="hidden" value="${fdWithdrawLog.handleStatus}"/>
+				<input type="hidden" name="id" value = "${ljzWithdrawLog.id}"/>
+				<input name="handleStatus" type="hidden" value="${ljzWithdrawLog.handleStatus}"/>
+				<input name="oldHandleStatus" type="hidden" value="${ljzWithdrawLog.handleStatus}"/>
 			<table class="table table-hover table-condensed">
 
 				<tr>
-					<th>审核备注</th>
+					<th width="10%">审核备注</th>
 					<td>
 						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 95%"></textarea>
 					</td>

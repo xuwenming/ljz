@@ -6,7 +6,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('.amount').each(function(){
-			$(this).text($.formatMoney($.trim($(this).text())));
+			$(this).text($.trim($(this).text().toFixed(2)));
 		});
 	});
 </script>
@@ -16,73 +16,57 @@
 			<tr>
 				<th width="10%"><%=TljzWithdrawLog.ALIAS_WITHDRAW_NO%></th>
 				<td width="40%">
-					${fdWithdrawLog.withdrawNo}
+					${ljzWithdrawLog.withdrawNo}
 				</td>
-				<th width="10%">申请时间</th>
+				<th width="10%">申请人ID</th>
 				<td>
-					${fdWithdrawLog.createTimeStr}
-				</td>
-			</tr>
-			<tr>
-				<th>申请人姓名</th>
-				<td>
-					${fdWithdrawLog.userName}
-				</td>
-				<th>手机号</th>
-				<td>
-					${fdWithdrawLog.userMobile}
+					${ljzWithdrawLog.userId}
 				</td>
 			</tr>
 			<tr>
 				<th><%=TljzWithdrawLog.ALIAS_AMOUNT%></th>
 				<td class="amount">
-					${fdWithdrawLog.amount}
+					${ljzWithdrawLog.amount}
 				</td>
 				<th>提现手续费</th>
 				<td class="amount">
-					${fdWithdrawLog.serviceAmt}
+					${ljzWithdrawLog.serviceAmt}
 				</td>
 			</tr>
 			<tr>
-				<th>银行</th>
+				<th>真实姓名</th>
 				<td>
-					${fdWithdrawLog.bankCodeZh}
+					${ljzWithdrawLog.realName}
 				</td>
-				<th>开户行支行</th>
+				<th>手机号</th>
 				<td>
-					${fdWithdrawLog.bankName}
-				</td>
-			</tr>
-			<tr>
-				<th>银行卡号</th>
-				<td>
-					${fdWithdrawLog.bankCard}
-				</td>
-				<th>开户姓名</th>
-				<td>
-					${fdWithdrawLog.bankAccount}
+					${ljzWithdrawLog.phone}
 				</td>
 			</tr>
 			<tr>
 				<th>处理状态</th>
 				<td>
-					${fdWithdrawLog.handleStatusZh}
+					${ljzWithdrawLog.handleStatusZh}
 				</td>
 				<th>处理人</th>
 				<td>
-					${fdWithdrawLog.handleLoginName}
+					${ljzWithdrawLog.handleLoginName}
 				</td>
 			</tr>
 			<tr>
 				<th>处理时间</th>
-				<td colspan="3">
-					<fmt:formatDate value="${fdWithdrawLog.handleTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				<td>
+					<fmt:formatDate value="${ljzWithdrawLog.handleTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				</td>
+				<th>申请时间</th>
+				<td>
+					<fmt:formatDate value="${ljzWithdrawLog.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 			</tr>
 			<tr>
 				<th>处理结果</th>
 				<td colspan="3">
-					${fdWithdrawLog.handleRemark}
+					${ljzWithdrawLog.handleRemark}
 				</td>
 			</tr>
 		</table>
