@@ -136,7 +136,7 @@ public class PayCommonUtil {
 			// 企业付款描述信息
 			parameters.put("desc", "吕家传提现");
 			// 公众账号ID 必填
-			parameters.put("mch_appid", Application.getString(WeixinUtil.APPID));
+			parameters.put("mch_appid", Application.getString(WeixinUtil.APPLET_APPID));
 			// 商户号 必填
 			parameters.put("mchid", Application.getString(WeixinUtil.MCH_ID));
 			// 随机字符串  必填 不长于32位
