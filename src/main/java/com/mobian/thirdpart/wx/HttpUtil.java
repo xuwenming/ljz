@@ -1,6 +1,5 @@
 package com.mobian.thirdpart.wx;
 
-import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -11,7 +10,6 @@ import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
@@ -159,7 +157,7 @@ public class HttpUtil {
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
 			String mchId = Application.getString(WeixinUtil.MCH_ID);
 
-			FileInputStream instream = new FileInputStream(new File(HttpUtil.class.getClassLoader().getResource("1360786202_20180925_cert.p12").getPath()));
+			FileInputStream instream = new FileInputStream(new File(HttpUtil.class.getClassLoader().getResource(mchId + "_apiclient_cert.p12").getPath()));
 			try {
 				keyStore.load(instream, mchId.toCharArray());
 			} finally {
