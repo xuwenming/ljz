@@ -41,6 +41,12 @@
 				</td>
 			</tr>
 			<tr>
+				<th>微信号</th>
+				<td colspan="3">
+					${ljzWithdrawLog.wechatNo}
+				</td>
+			</tr>
+			<tr>
 				<th>处理状态</th>
 				<td>
 					${ljzWithdrawLog.handleStatusZh}

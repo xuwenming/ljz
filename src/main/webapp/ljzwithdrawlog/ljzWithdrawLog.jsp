@@ -80,6 +80,10 @@
 				field : 'phone',
 				title : '申请人手机号',
 				width : 50
+            	}, {
+                field : 'wechatNo',
+                title : '微信号',
+                width : 80
 				}, {
 				field : 'amount',
 				title : '<%=TljzWithdrawLog.ALIAS_AMOUNT%>',
@@ -103,7 +107,7 @@
 				formatter: function (value, row, index) {
 					var str;
 					if(row.handleStatus == "HS01") str = value;
-					else if(row.handleStatus == "HS02") str = '<font style="color:#1AAFF0;">'+value+'</font>';
+					else if(row.handleStatus == "HS02") str = '<font color="#4cd964;">'+value+'</font>';
 					else if(row.handleStatus == "HS03")str =  '<font color="#f6383a;">'+value+'</font>';
 					else if(row.handleStatus == "HS04")str =  '<font color="#4cd964;">'+value+'</font>';
 					else str =  '<font color="#F00;">'+value+'</font>';

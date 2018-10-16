@@ -220,47 +220,52 @@ public class LjzWithdrawLogServiceImpl extends BaseServiceImpl<LjzWithdrawLog> i
 
 		//通过
 		if ("HS02".equals(ljzWithdrawLog.getHandleStatus())) {
-			LjzUser user = ljzUserService.get(withdrawLog.getUserId());
-			//2. 参数填充
-			Map<String, Object> params = new HashMap<>();
-			params.put("amount", withdrawLog.getAmount().multiply(BigDecimal.valueOf(100)).intValue());
-			params.put("openid", user.getRefId());
-			params.put("partner_trade_no", withdrawLog.getWithdrawNo());
-			params.put("re_user_name", withdrawLog.getRealName());
-			params.put("spbill_create_ip", IpUtil.getIp(request));
+//			LjzUser user = ljzUserService.get(withdrawLog.getUserId());
+//			//2. 参数填充
+//			Map<String, Object> params = new HashMap<>();
+//			params.put("amount", withdrawLog.getAmount().multiply(BigDecimal.valueOf(100)).intValue());
+//			params.put("openid", user.getRefId());
+//			params.put("partner_trade_no", withdrawLog.getWithdrawNo());
+//			params.put("re_user_name", withdrawLog.getRealName());
+//			params.put("spbill_create_ip", IpUtil.getIp(request));
+//
+//			try {
+//				//3. 扣款
+//				String requestXml = PayCommonUtil.requestTransfersXML(params);
+//				System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
+//				String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
+//				System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
+//
+//				Map<String, String> resultMap = XMLUtil.doXMLParse(result);
+//
+//				if (!F.empty(resultMap.get("result_code")) && resultMap.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+//					//4. 编辑提现申请记录
+//					ljzWithdrawLog.setHandleLoginId(loginId);
+//					ljzWithdrawLog.setHandleTime(new Date());
+//					ljzWithdrawLog.setPaymentNo(resultMap.get("payment_no").toString());
+//					if(resultMap.get("cmms_amt") != null)
+//						ljzWithdrawLog.setCmmsAmt(new BigDecimal(resultMap.get("cmms_amt")).divide(BigDecimal.valueOf(100)));
+//					edit(ljzWithdrawLog);
+//
+//				} else {
+//					ljzWithdrawLog.setHandleStatus("HS01");
+//					ljzWithdrawLog.setHandleLoginId(loginId);
+//					ljzWithdrawLog.setHandleTime(new Date());
+//					ljzWithdrawLog.setHandleRemark("提现失败" + resultMap.get("err_code_des"));
+//					edit(ljzWithdrawLog);
+//				}
+//			} catch (Exception e) {
+//				ljzWithdrawLog.setHandleStatus("HS01");
+//				ljzWithdrawLog.setHandleLoginId(loginId);
+//				ljzWithdrawLog.setHandleTime(new Date());
+//				ljzWithdrawLog.setHandleRemark("提现失败--接口异常");
+//				edit(ljzWithdrawLog);
+//			}
 
-			try {
-				//3. 扣款
-				String requestXml = PayCommonUtil.requestTransfersXML(params);
-				System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
-				String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
-				System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
-
-				Map<String, String> resultMap = XMLUtil.doXMLParse(result);
-
-				if (!F.empty(resultMap.get("result_code")) && resultMap.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
-					//4. 编辑提现申请记录
-					ljzWithdrawLog.setHandleLoginId(loginId);
-					ljzWithdrawLog.setHandleTime(new Date());
-					ljzWithdrawLog.setPaymentNo(resultMap.get("payment_no").toString());
-					if(resultMap.get("cmms_amt") != null)
-						ljzWithdrawLog.setCmmsAmt(new BigDecimal(resultMap.get("cmms_amt")).divide(BigDecimal.valueOf(100)));
-					edit(ljzWithdrawLog);
-
-				} else {
-					ljzWithdrawLog.setHandleStatus("HS01");
-					ljzWithdrawLog.setHandleLoginId(loginId);
-					ljzWithdrawLog.setHandleTime(new Date());
-					ljzWithdrawLog.setHandleRemark("提现失败" + resultMap.get("err_code_des"));
-					edit(ljzWithdrawLog);
-				}
-			} catch (Exception e) {
-				ljzWithdrawLog.setHandleStatus("HS01");
-				ljzWithdrawLog.setHandleLoginId(loginId);
-				ljzWithdrawLog.setHandleTime(new Date());
-				ljzWithdrawLog.setHandleRemark("提现失败--接口异常");
-				edit(ljzWithdrawLog);
-			}
+			// 手动提现 TODO
+			ljzWithdrawLog.setHandleLoginId(loginId);
+			ljzWithdrawLog.setHandleTime(new Date());
+			edit(ljzWithdrawLog);
 		}
 		// 拒绝
 		else if ("HS03".equals(ljzWithdrawLog.getHandleStatus())) {

@@ -20,6 +20,7 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	private Integer userId;
 	private String realName;
 	private String phone;
+	private String wechatNo;
 	private String content;
 	private String handleStatus;
 	private String handleLoginId;
@@ -114,6 +115,15 @@ public class LjzWithdrawLog implements java.io.Serializable {
 	public String getPhone() {
 		return this.phone;
 	}
+
+	public String getWechatNo() {
+		return wechatNo;
+	}
+
+	public void setWechatNo(String wechatNo) {
+		this.wechatNo = wechatNo;
+	}
+
 	public void setContent(String content) {
 		this.content = content;
 	}

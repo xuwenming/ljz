@@ -71,6 +71,7 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 	private String realName;
 	//@Length(max=32)
 	private String phone;
+	private String wechatNo;
 	//@Length(max=512)
 	private String content;
 	//@Length(max=4)
@@ -192,7 +193,16 @@ public class TljzWithdrawLog implements java.io.Serializable,IEntity{
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
+	@Column(name = "wechat_no", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getWechatNo() {
+		return wechatNo;
+	}
+
+	public void setWechatNo(String wechatNo) {
+		this.wechatNo = wechatNo;
+	}
+
 	@Column(name = "content", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getContent() {
 		return this.content;
