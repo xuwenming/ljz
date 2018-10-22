@@ -1,6 +1,8 @@
 package com.mobian.thirdpart.wx;
 
+import com.mobian.absx.UUID;
 import com.mobian.listener.Application;
+import com.mobian.thirdpart.oss.OSSUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,6 +20,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
+
 
 public class HttpUtil {
 	
@@ -143,6 +146,54 @@ public class HttpUtil {
 			log.error("https request error:{}", e);
 		}
 		return buffer.toString();
+	}
+
+	public static String downloadWxacode(String requestUrl, String requestMethod, String outputStr) {
+		String result = null;
+		try {
+			// 创建SSLContext对象，并使用我们指定的信任管理器初始化
+			TrustManager[] tm = { new MyX509TrustManager() };
+			SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+			sslContext.init(null, tm, new java.security.SecureRandom());
+			// 从上述SSLContext对象中得到SSLSocketFactory对象
+			SSLSocketFactory ssf = sslContext.getSocketFactory();
+
+			URL url = new URL(requestUrl);
+			HttpsURLConnection.setDefaultHostnameVerifier(ignoreHostnameVerifier);
+			HttpsURLConnection httpUrlConn = (HttpsURLConnection) url.openConnection();
+			httpUrlConn.setSSLSocketFactory(ssf);
+
+			httpUrlConn.setDoOutput(true);
+			httpUrlConn.setDoInput(true);
+			httpUrlConn.setUseCaches(false);
+			// 设置请求方式（GET/POST）
+			httpUrlConn.setRequestMethod(requestMethod.toUpperCase());
+
+			if ("GET".equalsIgnoreCase(requestMethod))
+				httpUrlConn.connect();
+
+			// 当有数据需要提交时
+			if (null != outputStr) {
+				OutputStream outputStream = httpUrlConn.getOutputStream();
+				// 注意编码格式，防止中文乱码
+				outputStream.write(outputStr.getBytes("UTF-8"));
+				outputStream.close();
+			}
+
+			// 将返回的输入流转换成字符串
+			InputStream inputStream = httpUrlConn.getInputStream();
+			String filename = UUID.uuid();
+			result = OSSUtil.putInputStream(OSSUtil.bucketName, inputStream, "qrcode/" + filename);
+			// 释放资源
+			inputStream.close();
+			inputStream = null;
+			httpUrlConn.disconnect();
+		} catch (ConnectException ce) {
+			log.error("Weixin server connection timed out.");
+		} catch (Exception e) {
+			log.error("https request error:{}", e);
+		}
+		return result;
 	}
 
 	/**

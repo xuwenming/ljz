@@ -18,7 +18,8 @@ public class LjzUser implements java.io.Serializable {
 	private java.lang.Integer sex;	
 	private java.lang.String refId;	
 	private java.lang.String refType;	
-	private java.lang.String recommends;	
+	private java.lang.String recommends;
+	private String wxacodeUrl;
 
 	private BigDecimal balance;
 
@@ -108,5 +109,13 @@ public class LjzUser implements java.io.Serializable {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+
+	public String getWxacodeUrl() {
+		return wxacodeUrl;
+	}
+
+	public void setWxacodeUrl(String wxacodeUrl) {
+		this.wxacodeUrl = wxacodeUrl;
 	}
 }

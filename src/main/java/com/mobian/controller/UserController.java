@@ -1,5 +1,6 @@
 package com.mobian.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.SessionInfo;
@@ -14,6 +16,8 @@ import com.mobian.pageModel.User;
 import com.mobian.service.ResourceServiceI;
 import com.mobian.service.RoleServiceI;
 import com.mobian.service.UserServiceI;
+import com.mobian.thirdpart.wx.AccessTokenInstance;
+import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.util.ConfigUtil;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
@@ -58,6 +62,7 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/login")
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
+
 		Json j = new Json();
 		String privateKey = (String)session.getAttribute(RSAUtil.PRIVATE_KEY);
 		user.setName(RSAUtil.decryptByPravite(user.getName(),privateKey));

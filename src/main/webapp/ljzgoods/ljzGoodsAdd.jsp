@@ -179,6 +179,12 @@
 					</td>
 				</tr>
 				<tr>
+					<th width="10%">商品说明</th>
+					<td colspan="3">
+						<textarea name="describtion"  class="easyui-validatebox" data-options="required:true"  style="width: 510px"></textarea>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="4">
 						<input type="hidden" name="imageUrl" id="imageFileNames" />
 						<input type="file" id="imageFile" name="imageFile" /><font color="red">第一张图片默认为商品封面图片，支持gif、jpg、jpeg、png、bmp等格式！</font>

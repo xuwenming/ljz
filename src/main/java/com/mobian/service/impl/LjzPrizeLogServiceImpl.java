@@ -133,7 +133,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 		List<LjzPrizeLog> ol = new ArrayList<>();
 		String hql = " from TljzPrizeLog t ";
 		@SuppressWarnings("unchecked")
-		List<TljzPrizeLog> l = query(hql, prizeLog, ljzPrizeLogDao, "quantity", "desc");
+		List<TljzPrizeLog> l = query(hql, prizeLog, ljzPrizeLogDao, "amount", "desc");
 		if (l != null && l.size() > 0) {
 			for (TljzPrizeLog t : l) {
 				LjzPrizeLog o = new LjzPrizeLog();
@@ -146,86 +146,101 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 
 	@Override
 	public void addPrizeLogByGoods(LjzGoods goods) {
-		List<Integer> userIds = new ArrayList<>();
-		Integer prizeNumber = goods.getPrizeNumber();
-		if(F.empty(prizeNumber)) {
-			prizeNumber = Integer.valueOf(Application.getString("SV200", "2"));
-		}
+		Random random = new Random();
+
 		// 获取商品昨日已支付订单
 		LjzOrder ljzOrder = new LjzOrder();
 		ljzOrder.setStatus("OD02");
 		ljzOrder.setGoodsId(goods.getId());
 		List<LjzOrder> orders = ljzOrderService.query(ljzOrder);
-		BigDecimal saleTotalAmount = BigDecimal.ZERO;
-		if(CollectionUtils.isNotEmpty(orders)) {
-			for(LjzOrder order : orders) {
-				saleTotalAmount = saleTotalAmount.add(order.getTotalPrice());
+		if(CollectionUtils.isNotEmpty(orders)) { // 真实中奖
+			Integer prizeNumber = goods.getPrizeNumber();
+			if(F.empty(prizeNumber)) {
+				prizeNumber = Integer.valueOf(Application.getString("SV200", "2"));
 			}
-		}
+			List<Integer> userIds = new ArrayList<>();
+			BigDecimal saleTotalAmount = BigDecimal.ZERO;
+			for(LjzOrder order : orders) {
+				saleTotalAmount = saleTotalAmount.add(order.getTotalPrice().subtract(order.getFreight()));
+				if(!userIds.contains(order.getUserId())) userIds.add(order.getUserId());
+			}
+			if(prizeNumber > userIds.size()) prizeNumber = userIds.size();
+			// 奖池总金额
+			BigDecimal prizeTotalAmount = saleTotalAmount.multiply(BigDecimal.valueOf(goods.getPrizePre())).divide(BigDecimal.valueOf(100), 0, BigDecimal.ROUND_HALF_UP);
 
-		if(saleTotalAmount.doubleValue() < 5) {
-			saleTotalAmount = new BigDecimal(Application.getString("SV201", "100"));
-		}
-
-		BigDecimal prizeAmount = saleTotalAmount.divide(BigDecimal.valueOf(prizeNumber), 0, BigDecimal.ROUND_HALF_UP);
-
-		Random random = new Random();
-		if(CollectionUtils.isNotEmpty(orders)) {
 			for(int i=0; i<prizeNumber; i++) {
-				LjzOrder order = orders.get(random.nextInt(orders.size()));
-				Integer userId = order.getUserId();
-				if(!userIds.contains(userId)) { // 真实用户中奖
-					userIds.add(userId);
-
-					// 获取用户中奖购买商品数量
-					int quantit = ljzOrderService.getBuyQuantityByUserId(userId, goods.getId());
-					// 新增消费中奖记录
-					LjzPrizeLog prizeLog = new LjzPrizeLog();
-					prizeLog.setUserId(userId);
-					prizeLog.setGoodsId(goods.getId());
-					prizeLog.setAmount(prizeAmount);
-					prizeLog.setQuantity(quantit);
-					add(prizeLog);
-
-					// 新增用户消费中奖
-					LjzBalanceLog balanceLog = new LjzBalanceLog();
-					balanceLog.setUserId(userId);
-					balanceLog.setRefType("BBT004"); // 消费中奖
-					balanceLog.setRefId(prizeLog.getId());
-					balanceLog.setAmount(prizeAmount);
-					ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
-
-					// 4、扣除店铺消费中奖
-					balanceLog = new LjzBalanceLog();
-					balanceLog.setUserId(order.getShopId());
-					balanceLog.setRefType("BBT002"); // 消费中奖支出
-					balanceLog.setRefId(prizeLog.getId());
-					balanceLog.setAmount(prizeAmount.multiply(BigDecimal.valueOf(-1)));
-					ljzBalanceLogService.addLogAndUpdateBalance(balanceLog, 1);
+				BigDecimal prizeAmount = prizeTotalAmount;
+				if(prizeNumber > 1) {
+					BigDecimal firstPre = new BigDecimal(Application.getString("SV203", "70"));
+					BigDecimal firstPrizeAmount = prizeTotalAmount.multiply(firstPre).divide(BigDecimal.valueOf(100), 0, BigDecimal.ROUND_HALF_UP);
+					if(i == 0) prizeAmount = firstPrizeAmount;
+					else {
+						prizeAmount = prizeTotalAmount.subtract(firstPrizeAmount).divide(BigDecimal.valueOf(prizeNumber-1), 0, BigDecimal.ROUND_HALF_UP);
+					}
 				}
 
+				LjzOrder order = orders.get(random.nextInt(orders.size()));
+				Integer userId = order.getUserId();
+
+				// 获取用户中奖购买商品数量
+				int quantity = ljzOrderService.getBuyQuantityByUserId(userId, goods.getId());
+				// 新增消费中奖记录
+				LjzPrizeLog prizeLog = new LjzPrizeLog();
+				prizeLog.setUserId(userId);
+				prizeLog.setGoodsId(goods.getId());
+				prizeLog.setAmount(prizeAmount);
+				prizeLog.setQuantity(quantity);
+				add(prizeLog);
+
+				// 新增用户消费中奖
+				LjzBalanceLog balanceLog = new LjzBalanceLog();
+				balanceLog.setUserId(userId);
+				balanceLog.setRefType("BBT004"); // 消费中奖
+				balanceLog.setRefId(prizeLog.getId());
+				balanceLog.setAmount(prizeAmount);
+				ljzBalanceLogService.addLogAndUpdateBalance(balanceLog);
+
+				// 4、扣除店铺消费中奖
+				balanceLog = new LjzBalanceLog();
+				balanceLog.setUserId(order.getShopId());
+				balanceLog.setRefType("BBT002"); // 消费中奖支出
+				balanceLog.setRefId(prizeLog.getId());
+				balanceLog.setAmount(prizeAmount.multiply(BigDecimal.valueOf(-1)));
+				ljzBalanceLogService.addLogAndUpdateBalance(balanceLog, 1);
+
 			}
-		}
-		int size = userIds.size();
-		if(size < prizeNumber) { // 模拟用户中奖
+		} else { // 模拟中奖
+			// 中奖金额
+			String agAmountStr = Application.getString("SV201", "50-1000");
+			String[] agAmounts = agAmountStr.split("-");
+			int minAmount = Integer.valueOf(agAmounts[0]);
+			int maxAmount = Integer.valueOf(agAmounts[1]);
+			int amount = random.nextInt(maxAmount)%(maxAmount-minAmount+1) + minAmount;
+			if(amount%10 != 0) {
+				amount += 10-amount%10;
+			}
+
+			// 购买件数
+			String agNumStr = Application.getString("SV202", "1-10");
+			String[] agNums = agNumStr.split("-");
+			int minNum = Integer.valueOf(agNums[0]);
+			int maxNum = Integer.valueOf(agNums[1]);
+			int num = random.nextInt(maxNum)%(maxNum-minNum+1) + minNum;
+
 			// 查询所有模拟用户
 			LjzUser ljzUser = new LjzUser();
 			ljzUser.setRefType("ag"); // 模拟用户
 			List<LjzUser> analogUsers = ljzUserService.query(ljzUser);
 			if(CollectionUtils.isNotEmpty(analogUsers)) {
-				for(int i=0; i<prizeNumber-size; i++) {
-					Integer userId = analogUsers.get(random.nextInt(analogUsers.size())).getId();
-					if(!userIds.contains(userId)) {
-						// 新增消费中奖记录
-						LjzPrizeLog prizeLog = new LjzPrizeLog();
-						prizeLog.setUserId(userId);
-						prizeLog.setGoodsId(goods.getId());
-						prizeLog.setAmount(prizeAmount);
-						prizeLog.setQuantity(1);
-						prizeLog.setRemark("模拟用户中奖");
-						add(prizeLog);
-					}
-				}
+				Integer userId = analogUsers.get(random.nextInt(analogUsers.size())).getId();
+				// 新增消费中奖记录
+				LjzPrizeLog prizeLog = new LjzPrizeLog();
+				prizeLog.setUserId(userId);
+				prizeLog.setGoodsId(goods.getId());
+				prizeLog.setAmount(BigDecimal.valueOf(amount));
+				prizeLog.setQuantity(num);
+				prizeLog.setRemark("模拟用户中奖");
+				add(prizeLog);
 			}
 		}
 	}

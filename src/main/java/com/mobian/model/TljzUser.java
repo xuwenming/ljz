@@ -63,6 +63,7 @@ public class TljzUser implements java.io.Serializable,IEntity{
 	private java.lang.String refType;
 	//@Length(max=512)
 	private java.lang.String recommends;
+	private String wxacodeUrl;
 	//columns END
 
 
@@ -175,8 +176,15 @@ public class TljzUser implements java.io.Serializable,IEntity{
 	public void setRecommends(java.lang.String recommends) {
 		this.recommends = recommends;
 	}
-	
-	
+
+	@Column(name = "wxacode_url", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public String getWxacodeUrl() {
+		return wxacodeUrl;
+	}
+
+	public void setWxacodeUrl(String wxacodeUrl) {
+		this.wxacodeUrl = wxacodeUrl;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

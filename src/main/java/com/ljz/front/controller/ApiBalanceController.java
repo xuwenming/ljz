@@ -133,6 +133,7 @@ public class ApiBalanceController extends BaseController {
             obj.put("minAmount", Application.getString("WD06", "10"));
             obj.put("serviceAmtPer", serviceAmtPer);
             obj.put("serviceAmt", serviceAmt);
+            obj.put("kfWechatNo", Application.getString("SV400"));
             j.setObj(obj);
             j.success();
             j.setMsg("获取提现配置");

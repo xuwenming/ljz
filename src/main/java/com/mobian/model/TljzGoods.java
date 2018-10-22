@@ -34,7 +34,7 @@ public class TljzGoods implements java.io.Serializable,IEntity{
 	public static final String ALIAS_IMAGE_URL = "商品图片";
 	public static final String ALIAS_DESCRIBTION = "商品描述";
 	public static final String ALIAS_IS_PUT_AWAY = "是否上下架 0：上架   1:下架";
-	public static final String ALIAS_LIMIT_NUMBER = "限购数量";
+	public static final String ALIAS_LIMIT_NUMBER = "建议数量";
 	public static final String ALIAS_FREIGHT = "运费";
 	public static final String ALIAS_SHARE_AMOUNT = "转发金额";
 	public static final String ALIAS_PRIZE_PRE = "奖池百分比";
@@ -178,7 +178,7 @@ public class TljzGoods implements java.io.Serializable,IEntity{
 		this.imageUrl = imageUrl;
 	}
 	
-	@Column(name = "describtion", unique = false, nullable = true, insertable = true, updatable = true, length = 100)
+	@Column(name = "describtion", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public java.lang.String getDescribtion() {
 		return this.describtion;
 	}

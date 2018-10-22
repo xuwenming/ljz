@@ -4,23 +4,18 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.listener.Application;
-import com.mobian.pageModel.BaseData;
-import com.mobian.service.BasedataServiceI;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.thirdpart.wx.bean.Menu;
-import com.mobian.thirdpart.wx.message.req.templateMessage.TemplateData;
 import com.mobian.thirdpart.wx.message.req.templateMessage.WxTemplate;
-import com.mobian.util.Constants;
-import com.mobian.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 public class WeixinUtil {
@@ -106,6 +101,8 @@ public class WeixinUtil {
 	 * 小程序code 获取 session_key 和 openid 接口地址
 	 */
 	public final static String WXAPP_JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
+
+	public final static String GET_WXACODE = "https://api.weixin.qq.com/wxa/getwxacode?access_token=ACCESS_TOKEN";
 
 
 	/**
@@ -386,36 +383,67 @@ public class WeixinUtil {
 		return authorize_url;
 	}
 
-	public static void main(String[] args) {
-		/**/AccessTokenInstance.accessToken = getAccessToken("wx79bc1c0347c691a5", "e983dde63a2923d9e2368add2f826dda");
-		WxTemplate temp = new WxTemplate();
-		temp.setTouser("ohFc8wC_pC8rKd8ONuIYaCZnMBYU");
-		temp.setUrl("http://zcys2016.com/wsale/api/apiHomeController/home");
-		temp.setTemplate_id("FSOPl6yBweh1TZ3GbwMUOOYEj6kuBA2UX7bCLagVCAA");
+	/**
+	 * 获取小程序二维码
+	 * @return
+	 */
+	public static String getWxacode(String param) {
+		String accessToken = (String)redisUtil.get(Key.build(Namespace.WX_CONFIG, "applet_wx_access_token"));
+		if(accessToken == null) {
+			AccessToken token = getAccessToken(Application.getString(APPLET_APPID), Application.getString(APPLET_APPSECRET));
+			if(token != null) {
+				accessToken = token.getToken();
+				redisUtil.set(Key.build(Namespace.WX_CONFIG, "applet_wx_access_token"), token.getToken(), token.getExpiresIn() - 200, TimeUnit.SECONDS);
+			}
+		}
+		return getWxacode(param, accessToken);
+	}
 
-		Map<String, TemplateData> data = new HashMap<String, TemplateData>();
-		TemplateData first = new TemplateData();
-		first.setValue("你有一件拍品已过期，无人出价。");
-		first.setColor("#0000E3");
-		data.put("first", first);
-		TemplateData keyword1 = new TemplateData();
-		keyword1.setValue("和田玉");
-		keyword1.setColor("#0000E3");
-		data.put("keyword1", keyword1);
-		TemplateData keyword2 = new TemplateData();
-		keyword2.setValue(DateUtil.format(new Date(), Constants.DATE_FORMAT));
-		keyword2.setColor("#0000E3");
-		data.put("keyword2", keyword2);
-		TemplateData keyword3 = new TemplateData();
-		keyword3.setValue(DateUtil.format(new Date(), Constants.DATE_FORMAT));
-		keyword3.setColor("#0000E3");
-		data.put("keyword3", keyword3);
-		TemplateData remark = new TemplateData();
-		remark.setValue("\n提醒：查看拍品");
-		//remark.setColor("#0000E3");
-		data.put("remark", remark);
-		temp.setData(data);
-		System.out.println(sendTemplateMessage(temp, AccessTokenInstance.accessToken.getToken()));
+	public static String getWxacode(String param, String accessToken) {
+
+		// 拼装创建菜单的url
+		String requestUrl = GET_WXACODE.replace("ACCESS_TOKEN", accessToken);
+		// 获取小程序二维码
+		String result = HttpUtil.downloadWxacode(requestUrl, "POST", param);
+		System.out.println("获取小程序二维码：" + result);
+
+		return result;
+	}
+
+	public static void main(String[] args) {
+
+
+
+		/**/AccessTokenInstance.accessToken = getAccessToken("wx88821c48181cb549", "c38b7311ed73cd3de419363d427f3286");
+
+//		WxTemplate temp = new WxTemplate();
+//		temp.setTouser("ohFc8wC_pC8rKd8ONuIYaCZnMBYU");
+//		temp.setUrl("http://zcys2016.com/wsale/api/apiHomeController/home");
+//		temp.setTemplate_id("FSOPl6yBweh1TZ3GbwMUOOYEj6kuBA2UX7bCLagVCAA");
+//
+//		Map<String, TemplateData> data = new HashMap<String, TemplateData>();
+//		TemplateData first = new TemplateData();
+//		first.setValue("你有一件拍品已过期，无人出价。");
+//		first.setColor("#0000E3");
+//		data.put("first", first);
+//		TemplateData keyword1 = new TemplateData();
+//		keyword1.setValue("和田玉");
+//		keyword1.setColor("#0000E3");
+//		data.put("keyword1", keyword1);
+//		TemplateData keyword2 = new TemplateData();
+//		keyword2.setValue(DateUtil.format(new Date(), Constants.DATE_FORMAT));
+//		keyword2.setColor("#0000E3");
+//		data.put("keyword2", keyword2);
+//		TemplateData keyword3 = new TemplateData();
+//		keyword3.setValue(DateUtil.format(new Date(), Constants.DATE_FORMAT));
+//		keyword3.setColor("#0000E3");
+//		data.put("keyword3", keyword3);
+//		TemplateData remark = new TemplateData();
+//		remark.setValue("\n提醒：查看拍品");
+//		//remark.setColor("#0000E3");
+//		data.put("remark", remark);
+//		temp.setData(data);
+//		System.out.println(sendTemplateMessage(temp, AccessTokenInstance.accessToken.getToken()));
 
 		/*AccessTokenInstance.accessToken = getAccessToken("wx79bc1c0347c691a5", "3b86cd0181d7247b5ef7fc231f9ba8fd");
 		TextMessage tm = new TextMessage();

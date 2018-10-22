@@ -1,22 +1,25 @@
 package com.ljz.front.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.concurrent.CacheKey;
 import com.mobian.concurrent.CompletionService;
 import com.mobian.concurrent.Task;
 import com.mobian.controller.BaseController;
+import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.impl.CompletionFactory;
+import com.mobian.thirdpart.wx.WeixinUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
 *
@@ -40,6 +43,9 @@ public class ApiGoodsController extends BaseController {
 
     @Autowired
     private LjzBalanceServiceI ljzBalanceService;
+
+    @Autowired
+    private TokenManage tokenManage;
 
     /**
      * 获取商品详情
@@ -85,6 +91,9 @@ public class ApiGoodsController extends BaseController {
             prizeLog.setToday(true);
             List<LjzPrizeLog> list = ljzPrizeLogService.query(prizeLog);
             if(CollectionUtils.isNotEmpty(list)) {
+                LjzPrizeLog first = list.get(0);
+                list = new ArrayList<>();
+                list.add(first);
                 for(LjzPrizeLog log : list) {
                     log.setUser(ljzUserService.get(log.getUserId()));
                 }
@@ -150,6 +159,33 @@ public class ApiGoodsController extends BaseController {
             j.setObj(dg);
         } catch (Exception e) {
             logger.error("获取商品详情接口异常", e);
+        }
+
+        return j;
+    }
+
+    /**
+     * 获取商品小程序专属二维码
+     * @return
+     */
+    @RequestMapping("/getWxacode")
+    @ResponseBody
+    public Json getWxacode(Integer id, HttpServletRequest request){
+        Json j = new Json();
+        try {
+            Integer userId = Integer.valueOf(tokenManage.getUid(request));
+            LjzUser user = ljzUserService.get(userId);
+            if(F.empty(user.getWxacodeUrl())) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("path", "/page/component/index?id=" + id + "&recommend=" + userId);
+                String url = WeixinUtil.getWxacode(JSONObject.toJSONString(param));
+                user.setWxacodeUrl(url);
+                ljzUserService.edit(user);
+            }
+            j.success();
+            j.setObj(user);
+        } catch (Exception e) {
+            logger.error("获取小程序专属二维码接口异常", e);
         }
 
         return j;
