@@ -116,7 +116,7 @@ public class ApiBalanceController extends BaseController {
             BigDecimal serviceAmt = BigDecimal.ZERO;
             if(serviceAmtFlag == 1) {
                 // 计算手续费1元的最小临界值
-                BigDecimal minCritical = BigDecimal.ONE.divide(serviceAmtPer).multiply(BigDecimal.valueOf(100));
+                BigDecimal minCritical = BigDecimal.ONE.divide(serviceAmtPer, 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
                 if(amount.doubleValue() <= minCritical.doubleValue()) {
                     serviceAmt = BigDecimal.ONE;
                 } else {
