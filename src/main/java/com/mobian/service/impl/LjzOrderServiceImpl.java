@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +19,7 @@ import com.mobian.service.LjzGoodsServiceI;
 import com.mobian.service.LjzOrderItemServiceI;
 import com.mobian.service.LjzOrderServiceI;
 
+import javafx.util.converter.BigDecimalStringConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -191,9 +193,9 @@ public class LjzOrderServiceImpl extends BaseServiceImpl<LjzOrder> implements Lj
 	public int getBuyQuantityByUserId(Integer userId, Integer goodsId) {
 		String sql = "select sum(quantity) from ljz_order o " +
 				"JOIN ljz_order_item oi on oi.order_id = o.id " +
-				"where o.user_id = " + userId + " and o.`status` = 'OD02' " +
+				"where o.user_id = " + userId + " and o.`status` = 'OD10' " +
 				"and oi.goods_id = " + goodsId + " and DATEDIFF(o.addtime, NOW()) = -1";
-		BigInteger count = ljzOrderDao.countBySql(sql);
+		Number count = ljzOrderDao.countBySql(sql);
 		return count == null ? 0 : count.intValue();
 	}
 

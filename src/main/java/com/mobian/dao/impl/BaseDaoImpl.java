@@ -249,20 +249,20 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 	}
 
 	@Override
-	public BigInteger countBySql(String sql) {
+	public Number countBySql(String sql) {
 		SQLQuery q = this.getCurrentSession().createSQLQuery(sql);
-		return (BigInteger) q.uniqueResult();
+		return (Number) q.uniqueResult();
 	}
 
 	@Override
-	public BigInteger countBySql(String sql, Map<String, Object> params) {
+	public Number countBySql(String sql, Map<String, Object> params) {
 		SQLQuery q = this.getCurrentSession().createSQLQuery(sql);
 		if (params != null && !params.isEmpty()) {
 			for (String key : params.keySet()) {
 				q.setParameter(key, params.get(key));
 			}
 		}
-		return (BigInteger) q.uniqueResult();
+		return (Number) q.uniqueResult();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

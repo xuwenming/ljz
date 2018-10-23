@@ -295,7 +295,7 @@ public interface BaseDaoI<T> {
 	 *            SQL语句
 	 * @return 数目
 	 */
-	public BigInteger countBySql(String sql);
+	public Number countBySql(String sql);
 
 	/**
 	 * 统计
@@ -306,6 +306,6 @@ public interface BaseDaoI<T> {
 	 *            参数
 	 * @return 数目
 	 */
-	public BigInteger countBySql(String sql, Map<String, Object> params);
+	public Number countBySql(String sql, Map<String, Object> params);
 
 }

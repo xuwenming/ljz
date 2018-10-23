@@ -150,7 +150,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 
 		// 获取商品昨日已支付订单
 		LjzOrder ljzOrder = new LjzOrder();
-		ljzOrder.setStatus("OD02");
+		ljzOrder.setStatus("OD10");
 		ljzOrder.setGoodsId(goods.getId());
 		List<LjzOrder> orders = ljzOrderService.query(ljzOrder);
 		if(CollectionUtils.isNotEmpty(orders)) { // 真实中奖
