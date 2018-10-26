@@ -91,6 +91,11 @@ public class WeixinUtil {
 	public final static String TEMPLATE_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 
 	/**
+	 * 小程序模板消息接口
+	 */
+	public final static String MINI_TEMPLATE_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=ACCESS_TOKEN";
+
+	/**
 	 * 获取获取用户基本信息
 	 */
 	public final static String USERINFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
@@ -106,70 +111,9 @@ public class WeixinUtil {
 
 
 	/**
-	 * 认证成功通知-认证成功通知模板ID
+	 * 小程序中奖结果通知
 	 */
-	public final static String AUTH_TEMPLATE_ID = "tIwenEOFtpEYWieN1V22BH1XPVHgsPppTpaFDx0s-TU";
-	/**
-	 * 出价被超通知
-	 */
-	public final static String EXCEED_TEMPLATE_ID = "cOBzm5aekMSaH5uUiUG2Bpt1MHasD_k5bTuSuVHkct8";
-	/**
-	 * 出价成功通知
-	 */
-	public final static String BID_TEMPLATE_ID = "qbCKN9CK23F40HTXKlDCVXQKWpri1E38Sp1WEQrVgqM";
-	/**
-	 * 拍卖结果通知
-	 */
-	public final static String DEAL_TEMPLATE_ID = "dR1fVX69sLj4RTnbRoYoMNm-uWFlJ38bclWXRIi5ozU";
-	/**
-	 * 实时交易提醒
-	 */
-	public final static String TRANSACTION_TEMPLATE_ID = "xvmbAkdIol_KPYACbYW1zqvcma_2QRhm98HSx2djpxE";
-	/**
-	 * 付款提醒-买家付款提醒
-	 */
-	public final static String PAY_REMIND_TEMPLATE_ID = "zzYCUjHwdKP753wMuv3BbjAZAaBEcqJh7TmKn32FPEo";
-	/**
-	 * 发货提醒-卖家发货提醒
-	 */
-	public final static String DELIVER_S_TEMPLATE_ID = "iIVq1hycbzCmNGVKrIwkk2fK2npwCJU38rbEQGN7RgQ";
-	/**
-	 * 订单发货提醒-订单发货提醒买家
-	 */
-	public final static String DELIVER_B_TEMPLATE_ID = "fcv11oig2vas9vOcZvqsCctw5MggVDMBcP-IPKoJ8FE";
-	/**
-	 * 交易完成通知-交易完成通知卖家
-	 */
-	public final static String DEAL_COMPLETE_TEMPLATE_ID = "l20c7uj243g_IFRUA_90ZOzjMnFSZY5K3RWpZl-idA0";
-	/**
-	 * 拍卖结束提醒
-	 */
-	public final static String AUCTION_END_TEMPLATE_ID = "dR6n77fa0ibsIdh22Pd9-lh6O5JCaTTphcXayZgDoLw";
-	/**
-	 * 退货申请提醒-给卖家发送退货申请提醒
-	 */
-	public final static String BACK_APPLY_TEMPLATE_ID = "tFJktmKwd-GlJgk2m_-kIYsVGtn55KZTByAZcQaVxFo";
-
-	/**
-	 * 保证金不退还通知
-	 */
-	public final static String MARGIN_NON_TEMPLATE_ID = "jXS_AYFYKj7lLPC0l7Zn3W9K4xOqSzp54-uTIQLBCx0";
-
-	/**
-	 * 退款通知
-	 */
-	public final static String REFUND_TEMPLATE_ID = "s2_sV3KfQsEUH-jpSzOI344vwuqBL_3iQq3Z8HwiQKU";
-
-	/**
-	 * 退货申请结果通知
-	 */
-	public final static String BACK_RESULT_TEMPLATE_ID = "PJcRzMdQZg4IX-FAxV759RqdG5e6vbUgJC20e3TsJdc";
-
-	/**
-	 * 转账通知
-	 */
-	public final static String OFFLINE_TRANSFER_TEMPLATE_ID = "FbK8rD55RVm76F7wAGsiNN1jEJT-P_9F1P9_gIHHNmo";
-
+	public final static String PRIZE_TEMPLATE_ID = "Ipk-45aFy0-dVsQ7QS4juGJbfJSCqWiClDPE-cnd4f8";
 
 
 	public static String CreateNoncestr(int length) {
@@ -336,7 +280,14 @@ public class WeixinUtil {
 	}
 
 	public static int sendTemplateMessage(WxTemplate wxTemplate) {
-		String accessToken = (String)redisUtil.get(Key.build(Namespace.WX_CONFIG, "wx_access_token"));
+		String accessToken = (String)redisUtil.get(Key.build(Namespace.WX_CONFIG, "applet_wx_access_token"));
+		if(accessToken == null) {
+			AccessToken token = getAccessToken(Application.getString(APPLET_APPID), Application.getString(APPLET_APPSECRET));
+			if(token != null) {
+				accessToken = token.getToken();
+				redisUtil.set(Key.build(Namespace.WX_CONFIG, "applet_wx_access_token"), token.getToken(), token.getExpiresIn() - 200, TimeUnit.SECONDS);
+			}
+		}
 		return sendTemplateMessage(wxTemplate, accessToken);
 	}
 
@@ -350,7 +301,7 @@ public class WeixinUtil {
 		int result = 0;
 
 		// 拼装创建菜单的url
-		String requestUrl = TEMPLATE_MESSAGE_URL.replace("ACCESS_TOKEN", accessToken);
+		String requestUrl = MINI_TEMPLATE_MESSAGE_URL.replace("ACCESS_TOKEN", accessToken);
 		// 将菜单对象转换成json字符串
 		String json = JSONObject.toJSONString(wxTemplate);
 		// 调用接口模板消息

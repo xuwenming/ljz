@@ -8,11 +8,12 @@ import com.mobian.dao.LjzPrizeLogDaoI;
 import com.mobian.listener.Application;
 import com.mobian.model.TljzPrizeLog;
 import com.mobian.pageModel.*;
-import com.mobian.service.LjzBalanceLogServiceI;
-import com.mobian.service.LjzOrderServiceI;
-import com.mobian.service.LjzPrizeLogServiceI;
+import com.mobian.service.*;
 
-import com.mobian.service.LjzUserServiceI;
+import com.mobian.thirdpart.wx.WeixinUtil;
+import com.mobian.thirdpart.wx.message.req.templateMessage.TemplateData;
+import com.mobian.thirdpart.wx.message.req.templateMessage.WxTemplate;
+import com.mobian.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 
 	@Autowired
 	private LjzBalanceLogServiceI ljzBalanceLogService;
+
+	@Autowired
+	private LjzPaymentServiceI ljzPaymentService;
 
 	@Override
 	public DataGrid dataGrid(LjzPrizeLog ljzPrizeLog, PageHelper ph) {
@@ -190,6 +194,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 				prizeLog.setGoodsId(goods.getId());
 				prizeLog.setAmount(prizeAmount);
 				prizeLog.setQuantity(quantity);
+				prizeLog.setRemark(order.getId().toString());
 				add(prizeLog);
 
 				// 新增用户消费中奖
@@ -208,6 +213,19 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 				balanceLog.setAmount(prizeAmount.multiply(BigDecimal.valueOf(-1)));
 				ljzBalanceLogService.addLogAndUpdateBalance(balanceLog, 1);
 
+				// 推送消息
+				LjzPayment ljzPayment = ljzPaymentService.getByOrderId(order.getId());
+				LjzUser user = ljzUserService.get(userId);
+				Map<String, String> map = new HashMap<>();
+				map.put("goodsId", goods.getId().toString());
+				map.put("touser", user.getRefId());
+				map.put("form_id", ljzPayment.getPrepayId());
+				map.put("keyword1", goods.getTitle());
+				map.put("keyword2", DateUtil.format(new Date(), "yyyy年MM月dd日"));
+				map.put("keyword3", prizeAmount + "元");
+				map.put("keyword4", "中奖金额已全额发放至您的资产钱包中，可申请提现");
+
+				sendPrizeTemplateMessage(map);
 			}
 		} else { // 模拟中奖
 			// 中奖金额
@@ -243,6 +261,36 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 				add(prizeLog);
 			}
 		}
+	}
+
+	private void sendPrizeTemplateMessage(Map<String, String> map) {
+		WxTemplate temp = new WxTemplate();
+		temp.setTouser(map.get("touser"));
+		temp.setTemplate_id(WeixinUtil.PRIZE_TEMPLATE_ID);
+		temp.setPage("page/component/index?id=" + map.get("goodsId"));
+		temp.setForm_id(map.get("form_id"));
+
+		Map<String, TemplateData> data = new HashMap<String, TemplateData>();
+		// 商品名称
+		TemplateData keyword1 = new TemplateData();
+		keyword1.setValue(map.get("keyword1"));
+		data.put("keyword1", keyword1);
+		// 中奖时间
+		TemplateData keyword2 = new TemplateData();
+		keyword2.setValue(map.get("keyword2"));
+		data.put("keyword2", keyword2);
+		// 中奖金额
+		TemplateData keyword3 = new TemplateData();
+		keyword3.setValue(map.get("keyword3"));
+		data.put("keyword3", keyword3);
+		// 备注
+		TemplateData keyword4 = new TemplateData();
+		keyword4.setValue(map.get("keyword4"));
+		data.put("keyword4", keyword4);
+
+		temp.setData(data);
+
+		WeixinUtil.sendTemplateMessage(temp);
 	}
 
 }

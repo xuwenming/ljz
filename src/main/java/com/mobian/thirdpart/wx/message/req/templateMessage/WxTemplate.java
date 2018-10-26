@@ -18,6 +18,19 @@ public class WxTemplate {
      * URL置空，则在发送后，点击模板消息会进入一个空白页面（ios），或无法点击（android）
      */
     private String url;
+
+    /**
+     * 小程序跳转页面
+     */
+    private String page;
+    /**
+     * 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
+     */
+    private String form_id;
+    /**
+     * 模板需要放大的关键词，不填则默认无放大
+     */
+    private String emphasis_keyword;
     /**
      * 标题颜色
      */
@@ -65,5 +78,29 @@ public class WxTemplate {
 
     public void setData(Map<String, TemplateData> data) {
         this.data = data;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public String getForm_id() {
+        return form_id;
+    }
+
+    public void setForm_id(String form_id) {
+        this.form_id = form_id;
+    }
+
+    public String getEmphasis_keyword() {
+        return emphasis_keyword;
+    }
+
+    public void setEmphasis_keyword(String emphasis_keyword) {
+        this.emphasis_keyword = emphasis_keyword;
     }
 }
