@@ -223,7 +223,7 @@ public class LjzPrizeLogServiceImpl extends BaseServiceImpl<LjzPrizeLog> impleme
 				map.put("keyword1", goods.getTitle());
 				map.put("keyword2", DateUtil.format(new Date(), "yyyy年MM月dd日"));
 				map.put("keyword3", prizeAmount + "元");
-				map.put("keyword4", "中奖金额已全额发放至您的资产钱包中，可申请提现");
+				map.put("keyword4", "中奖金额已发放至您的资产钱包中");
 
 				sendPrizeTemplateMessage(map);
 			}
